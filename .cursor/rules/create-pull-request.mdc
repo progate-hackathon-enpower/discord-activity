@@ -1,0 +1,35 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## pull request作成手順
+まず、このファイルを参照したら、「Pull Request作成手順のファイルを確認しました！」と報告してください。
+
+### 差分の確認
+- {{マージ先ブランチ}}に関する指定がない場合は、どのブランチに対してPullRequestを作成するか必ず聞き返してください。
+- `git diff origin/{{マージ先ブランチ}}...HEAD | cat` でマージ先ブランチとの差分を確認
+### Pull Request 作成とブラウザでの表示
+- 以下のコマンドで pull request を作成し、自動的にブラウザで開く
+- PR タイトルおよび PR テンプレートはマージ先との差分をもとに適切な内容にする
+- 基本的に Draft で pull request を作成
+- PR の本文は [pull-request-template.mdc](mdc:.cursor/rules/pull-request-template.mdc) を参考にした上で、 [pr_body.text](mdc:.cursor/rules/pr_body.text) を編集して作成する
+- [pr_body.text](mdc:.cursor/rules/pr_body.text) にはGitHub Copilotへの指示文があるが、該当部分は削除せずそのまま編集すること
+
+  --- bash
+  # PR本文を一時ファイルに保存
+  cat > pr_body.txt << 'EOL'
+  {{PRテンプレートの内容}}
+  EOL
+
+  # PRの作成
+  git push origin HEAD && \
+  gh pr create --draft --title "{{PRタイトル}}" --body-file pr_body.txt && \
+  gh pr view --web
+  ---
+
+- 各セクションを明確に区分
+- 必要な情報を漏れなく記載
+
+#### PRテンプレート
+[pull-request-template.mdc](mdc:.cursor/rules/pull-request-template.mdc) からテンプレート内容を取得すること
