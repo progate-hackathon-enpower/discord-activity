@@ -7,8 +7,16 @@ dotenv.config({ path: "../.env" });
 
 const app = new Hono();
 
+app.use("*", async (c, next) => {
+  console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.url}`);
+  console.log("Body:", await c.req.text());
+
+  await next();
+});
+
 // `/api/token` エンドポイント
 app.post("/api/token", async (c) => {
+  console.log("Received request to /api/token");
   try {
     const body = await c.req.parseBody<{ code: string }>();
 
@@ -40,6 +48,10 @@ app.post("/api/token", async (c) => {
   } catch (error) {
     return c.json({ error: "Internal Server Error" }, 500);
   }
+});
+
+app.get("/", (c) => {
+  return c.text("Hello from Hono!");
 });
 
 // サーバーを3001番ポートで起動
