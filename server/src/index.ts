@@ -7,18 +7,11 @@ dotenv.config({ path: "../.env" });
 
 const app = new Hono();
 
-app.use("*", async (c, next) => {
-  console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.url}`);
-  console.log("Body:", await c.req.text());
-
-  await next();
-});
-
 // `/api/token` エンドポイント
 app.post("/api/token", async (c) => {
   console.log("Received request to /api/token");
   try {
-    const body = await c.req.parseBody<{ code: string }>();
+    const body = await c.req.json();
 
     if (!body.code) {
       return c.json({ error: "Authorization code is required" }, 400);
