@@ -9,8 +9,9 @@ const app = new Hono();
 
 // `/api/token` エンドポイント
 app.post("/api/token", async (c) => {
+  console.log("Received request to /api/token");
   try {
-    const body = await c.req.parseBody<{ code: string }>();
+    const body = await c.req.json();
 
     if (!body.code) {
       return c.json({ error: "Authorization code is required" }, 400);
@@ -40,6 +41,10 @@ app.post("/api/token", async (c) => {
   } catch (error) {
     return c.json({ error: "Internal Server Error" }, 500);
   }
+});
+
+app.get("/", (c) => {
+  return c.text("Hello from Hono!");
 });
 
 // サーバーを3001番ポートで起動
