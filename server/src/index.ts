@@ -43,6 +43,9 @@ app.post("/api/token", async (c) => {
 });
 
 // サーバーを3001番ポートで起動
-serve(app, (info) => {
-  console.log(`Server running at http://localhost:${info.port}`);
+serve({
+  fetch: app.fetch,
+  port: 3001,
+},(info)=>{
+  console.log(`Server is running on http://localhost:${info.port}`);
 });
