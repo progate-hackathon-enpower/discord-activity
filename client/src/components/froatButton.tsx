@@ -4,11 +4,12 @@ import { FaQuestion,FaCog,FaDoorClosed } from "react-icons/fa";
 import './froatButton.css'
 
 const FroatButton: React.FC = () => {
+    const iconsize="100%";
     return (
         <div className="button-container">
-            <button className="circle-button"><FaQuestion/></button>
-            <button className="circle-button"><FaCog/></button>
-            <button className="circle-button"><FaDoorClosed/></button>
+            <button className="circle-button"><FaQuestion style={{fontSize:iconsize}}/></button>
+            <button className="circle-button"><FaCog style={{fontSize:iconsize}}/></button>
+            <button className="circle-button"><FaDoorClosed style={{fontSize:iconsize}}/></button>
         </div>
     )
 };

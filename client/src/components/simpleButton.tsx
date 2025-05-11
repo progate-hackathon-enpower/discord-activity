@@ -1,4 +1,4 @@
-const SimpleButton = ({ width = "150px", height = "50px", color = "#00A2E8", text = "Click Me", onClick = ()=>{},spacing = 0 }) => {
+const SimpleButton = ({ width = "150px", height = "50px", color = "#56D364", text = "Click Me", onClick = ()=>{},spacing = 0 }) => {
     const buttonStyle = {
         width,
         height,
@@ -9,7 +9,6 @@ const SimpleButton = ({ width = "150px", height = "50px", color = "#00A2E8", tex
         fontSize: "16px",
         cursor: "pointer",
         transition: "0.3s",
-        display: "flex",
         alignItems: "center",
         justifyContent: "center",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -28,7 +27,7 @@ const SimpleButton = ({ width = "150px", height = "50px", color = "#00A2E8", tex
 export default SimpleButton;
 
 
-const SubButton = ({ width = "150px", height = "50px", color = "#00A2E8", text = "Click Me", onClick = ()=>{},spacing = 0 }) => {
+const SubButton = ({ width = "150px", height = "50px", color = "#56D364", text = "Click Me", onClick = ()=>{},spacing = 0 }) => {
     const buttonStyle = {
         width,
         height,
@@ -39,7 +38,6 @@ const SubButton = ({ width = "150px", height = "50px", color = "#00A2E8", text =
         fontSize: "16px",
         cursor: "pointer",
         transition: "0.3s",
-        display: "flex",
         alignItems: "center",
         justifyContent: "center",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
