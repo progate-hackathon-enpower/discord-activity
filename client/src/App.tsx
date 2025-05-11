@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
+// import reactLogo from './assets/react.svg';
+// import viteLogo from '/vite.svg';
 import './App.css';
 import { DiscordSDK } from "@discord/embedded-app-sdk";
+import backgroundImg from './assets/home_background.png';
+import FrontendButton from './components/froatButton.tsx';
 
 // SDK のインスタンスを生成
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
@@ -73,17 +75,12 @@ function App() {
   );
   
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <body style={{backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center" }}>
+      <div className="overlay">
+        <h1>ようこそ、{authContext.user.username}</h1>
+        <FrontendButton/>
       </div>
-      <h1>ようこそ、{authContext.user.username}</h1>
-    </>
+    </body>
   )
 }
 
