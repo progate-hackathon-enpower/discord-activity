@@ -1,10 +1,11 @@
 import {useEffect, useState} from 'react';
 // import reactLogo from './assets/react.svg';
-// import viteLogo from '/vite.svg';
+import mainLogo from './assets/logo.png';
 import './App.css';
 import { DiscordSDK } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/home_background.png';
 import FrontendButton from './components/froatButton.tsx';
+import SimpleButton from './components/simpleButton.tsx';
 
 // SDK のインスタンスを生成
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
@@ -75,9 +76,14 @@ function App() {
   );
   
   return (
-    <body style={{backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center" }}>
-      <div className="overlay">
-        <h1>ようこそ、{authContext.user.username}</h1>
+    <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center",placeItems:"center",alignContent: "center",alignItems:"center" }}>
+      <div className="overlay"></div>
+      <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
+        <img className="logo" src={mainLogo} style={{width:"60%"}}/>
+        <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
+        <SimpleButton text='タップで始める' onClick={()=>{}}/>
+        
+        {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
       </div>
     </body>
