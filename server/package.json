@@ -8,11 +8,14 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
+    "@supabase/supabase-js": "^2.49.4",
     "dotenv": "^16.5.0",
     "hono": "^4.7.9",
+    "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
