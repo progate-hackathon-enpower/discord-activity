@@ -6,6 +6,8 @@ import { DiscordSDK } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/home_background.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import Home from './Home.tsx';
 
 // SDK のインスタンスを生成
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
@@ -62,7 +64,8 @@ async function authenticate():Promise<authType|null> {
   return auth;
 }
 
-function App() {
+function MainApp() {
+  const navigate = useNavigate();
   const [authContext, setAuthContext] = useState<authType | null>(null);
   useEffect(()=>{
     const fetchAuth = async () => {
@@ -81,7 +84,7 @@ function App() {
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
         <img className="logo" src={mainLogo} style={{width:"60%"}}/>
         <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
-        <SimpleButton text='タップで始める' onClick={()=>{}}/>
+        <SimpleButton text='タップで始める' onClick={()=>{navigate("/home")}}/>
         
         {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
@@ -89,5 +92,28 @@ function App() {
     </body>
   )
 }
+
+const MainRoutes = () => {
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={<MainApp />}
+      />
+      <Route
+        path="/Home"
+        element={<Home/>}
+      />
+    </Routes>
+  );
+}
+
+const App: React.FC = () => {
+  return (
+      <Router>
+        <MainRoutes />
+      </Router>
+  );
+};
 
 export default App
