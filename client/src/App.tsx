@@ -8,7 +8,7 @@ import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './Home.tsx';
-
+import { createClient } from '@supabase/supabase-js'
 // SDK のインスタンスを生成
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 
@@ -16,6 +16,8 @@ type authType = Awaited<ReturnType<typeof discordSdk.commands.authenticate>>;
 setupDiscordSdk().then(() => {
   console.log("Discord SDK is ready");
 });
+
+const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
 // SDK を介してアプリにアクセス
 async function setupDiscordSdk() {
@@ -37,11 +39,8 @@ async function authenticate():Promise<authType|null> {
     ],
   });
 
-  // Retrieve an access_token from your activity's server
-  // Note: We need to prefix our backend `/api/token` route with `/.proxy` to stay compliant with the CSP.
-  // Read more about constructing a full URL and using external resources at
-  // https://discord.com/developers/docs/activities/development-guides#construct-a-full-url
-  const response = await fetch("/.proxy/api/token", {
+
+  const discordTokenResponse = await fetch("/.proxy/api/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -50,13 +49,38 @@ async function authenticate():Promise<authType|null> {
       code,
     }),
   });
-  if(response.status !== 200) return null;
-  const { access_token } = await response.json();
-  // Authenticate with Discord client (using the access_token)
+
+  if(discordTokenResponse.status !== 200) return null;
+  const discordData = await discordTokenResponse.json();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  console.log(user);
 
   const auth = await discordSdk.commands.authenticate({
-    access_token,
+    access_token: discordData.access_token,
   });
+
+  const supabaseTokenResponse = await fetch("/.proxy/api/supabase/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      access_token: auth.access_token,
+    }),
+  });
+
+  if(supabaseTokenResponse.status !== 200) return null;
+  const { access_token, refresh_token } = await supabaseTokenResponse.json();
+  console.log(access_token, refresh_token);
+
+  await supabase.auth.setSession({
+    access_token,
+    refresh_token,
+  });
+
+  const { data } = await supabase.auth.getUser();
+  console.log(data.user);
   
   if (auth == null) {
     return null;
