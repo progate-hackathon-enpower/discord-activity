@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 // import reactLogo from './assets/react.svg';
 import mainLogo from './assets/logo.png';
 import './App.css';
-import { DiscordSDK } from "@discord/embedded-app-sdk";
+import { DiscordSDK,Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/home_background.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
@@ -67,17 +67,28 @@ async function authenticate():Promise<authType|null> {
 function MainApp() {
   const navigate = useNavigate();
   const [authContext, setAuthContext] = useState<authType | null>(null);
+  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
       setAuthContext(auth);
     };
     fetchAuth();
-  });
+  },[authContext]);
   if(authContext == null) return (
     <h1>ローディング中...</h1>
   );
-  
+
+  // ユーザーの参加イベントを監視
+  function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
+    console.log(JSON.stringify(participants.participants));
+    participants.participants.forEach((p)=>{
+      console.log(p.username);
+      setCurrentUserUpdate(p);
+    });
+  }
+
+  discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center",placeItems:"center",alignContent: "center",alignItems:"center" }}>
       <div className="overlay"></div>
@@ -85,7 +96,8 @@ function MainApp() {
         <img className="logo" src={mainLogo} style={{width:"60%"}}/>
         <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
         <SimpleButton text='タップで始める' onClick={()=>{navigate("/home")}}/>
-        
+        <p>{authContext.access_token}</p>
+        {currentUserUpdate != null ?<p>{currentUserUpdate.username}が参加しました</p>: <p>ユーザーの参加イベントはありません</p>}
         {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
       </div>
