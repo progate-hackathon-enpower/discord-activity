@@ -4,6 +4,7 @@ import mainLogo from './assets/logo.png';
 import './App.css';
 import { DiscordSDK,Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/home_background.png';
+import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
@@ -23,8 +24,8 @@ const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env
 async function setupDiscordSdk() {
   await discordSdk.ready();
 }
-
-async function authenticate():Promise<authType|null> {
+/// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
+async function authenticate():Promise<authType|number> {
   console.log("Starting authentication process...");
   const { code } = await discordSdk.commands.authorize({
     client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
@@ -39,7 +40,6 @@ async function authenticate():Promise<authType|null> {
     ],
   });
 
-
   const discordTokenResponse = await fetch("/.proxy/api/token", {
     method: "POST",
     headers: {
@@ -50,7 +50,7 @@ async function authenticate():Promise<authType|null> {
     }),
   });
 
-  if(discordTokenResponse.status !== 200) return null;
+  if(discordTokenResponse.status !== 200) return 1;
   const discordData = await discordTokenResponse.json();
 
   const { data: { user } } = await supabase.auth.getUser();
@@ -59,38 +59,42 @@ async function authenticate():Promise<authType|null> {
   const auth = await discordSdk.commands.authenticate({
     access_token: discordData.access_token,
   });
+  
+  try{
+    const supabaseTokenResponse = await fetch("/.proxy/api/supabase/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        access_token: auth.access_token,
+      }),
+    });
 
-  const supabaseTokenResponse = await fetch("/.proxy/api/supabase/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      access_token: auth.access_token,
-    }),
-  });
+    if(supabaseTokenResponse.status !== 200) return 3;
+    const { access_token, refresh_token } = await supabaseTokenResponse.json();
 
-  if(supabaseTokenResponse.status !== 200) return null;
-  const { access_token, refresh_token } = await supabaseTokenResponse.json();
-  console.log(access_token, refresh_token);
-
-  await supabase.auth.setSession({
-    access_token,
-    refresh_token,
-  });
+    await supabase.auth.setSession({
+      access_token,
+      refresh_token,
+    });
+  }catch(e){
+    console.error(e);
+    return 1;
+  }
 
   const { data } = await supabase.auth.getUser();
   console.log(data.user);
   
   if (auth == null) {
-    return null;
+    return 2;
   }
   return auth;
 }
 
 function MainApp() {
   const navigate = useNavigate();
-  const [authContext, setAuthContext] = useState<authType | null>(null);
+  const [authContext, setAuthContext] = useState<authType | number>(0);
   const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
   useEffect(()=>{
     const fetchAuth = async () => {
@@ -102,6 +106,30 @@ function MainApp() {
   if(authContext == null) return (
     <h1>ローディング中...</h1>
   );
+
+  if(typeof authContext == 'number'){
+    /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
+    switch(authContext){
+      case 1:
+        return (
+          <h1>サーバーとの通信に失敗しました</h1>
+        );
+      case 2:
+        return (
+          <h1>ローディング中...</h1>
+        );
+      case 3:
+        return (
+          <>
+          <img src={qrcodeImage} style={{width:"80vh",maxWidth:"80%"}}></img>
+            <h1>アプリから登録を完了してください。</h1>
+          </>
+        );
+    }
+    return (
+      <h1>ローディング中...</h1>
+    );
+  }
 
   // ユーザーの参加イベントを監視
   function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
@@ -120,7 +148,6 @@ function MainApp() {
         <img className="logo" src={mainLogo} style={{width:"60%"}}/>
         <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
         <SimpleButton text='タップで始める' onClick={()=>{navigate("/home")}}/>
-        <p>{authContext.access_token}</p>
         {currentUserUpdate != null ?<p>{currentUserUpdate.username}が参加しました</p>: <p>ユーザーの参加イベントはありません</p>}
         {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
