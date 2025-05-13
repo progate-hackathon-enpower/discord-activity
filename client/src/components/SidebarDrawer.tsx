@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaMusic, FaHourglass, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
-import '../Home.css';
+import './SidebarDrawer.css';
+import { useClickOutside } from '../hooks/useClickOutside';
 
 const SidebarDrawer: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside(sidebarRef, () => {
+        if (drawerOpen) {
+            setDrawerOpen(false);
+        }
+    });
+
     return (
-        <div className={`sidebar${drawerOpen ? ' sidebar--open' : ''}`}> 
+        <div ref={sidebarRef} className={`sidebar${drawerOpen ? ' sidebar--open' : ''}`}> 
             <button className="sidebar__toggle" onClick={() => setDrawerOpen(!drawerOpen)}>
                 {drawerOpen ? <FaChevronLeft /> : <FaChevronRight />}
             </button>

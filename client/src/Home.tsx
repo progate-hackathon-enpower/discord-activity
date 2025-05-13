@@ -5,6 +5,7 @@ import SidebarDrawer from './components/SidebarDrawer';
 import TopTitle from './components/TopTitle';
 import ParticipantRanking from './components/ParticipantRanking';
 import ActivityTimeline from './components/ActivityTimeline';
+import ActivityStats from './components/ActivityStats';
 import type { Activity } from './components/ActivityTimeline';
 
 const dummyParticipants = [
@@ -65,11 +66,18 @@ const StarsBackground = () => {
 };
 
 const Home = () => {
+    // もくもく会の開始時間を設定（例：現在時刻から1時間前）
+    const startTime = new Date(Date.now() - 60 * 60 * 1000);
+    
+    // 総Contribution数を計算
+    const totalContributions = dummyParticipants.reduce((sum, participant) => sum + participant.commit, 0);
+
     return (
         <div style={{position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden'}}>
             <StarsBackground />
             <div className="ranking-background" />
             <ParticipantRanking participants={dummyParticipants} />
+            <ActivityStats startTime={startTime} totalContributions={totalContributions} />
             <div className="home__container">
                 <SidebarDrawer />
                 <TopTitle title="ハッカソンもくもくかい①" />
