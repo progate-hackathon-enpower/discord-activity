@@ -292,66 +292,6 @@ html, body {
     }
 }
 
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 32px;
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    transition: width 0.3s cubic-bezier(.4,2,.6,1), background 0.3s;
-    z-index: 1000;
-    box-shadow: none;
-}
-.sidebar__toggle {
-    background: #874FFF;
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    width: 32px;
-    height: 48px;
-    cursor: pointer;
-    outline: none;
-    margin-top: 8px;
-    margin-bottom: 16px;
-    border-radius: 0 8px 8px 0;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
-    transition: background 0.2s;
-    position: relative;
-    left: 0;
-    z-index: 1001;
-}
-.sidebar__toggle:hover {
-    background: #a07fff;
-}
-.sidebar--open {
-    width: 100px;
-    background: #874FFF;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
-}
-.sidebar--open .sidebar__toggle {
-    background: transparent;
-    color: #fff;
-    box-shadow: none;
-}
-.sidebar__icons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-    margin-top: 24px;
-    width: 100%;
-}
-.sidebar__icon {
-    color: #fff;
-    font-size: 32px;
-    transition: color 0.2s;
-}
-
 .home__footer--left {
     justify-content: flex-start !important;
     left: 0;
