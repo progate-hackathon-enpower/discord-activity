@@ -47,13 +47,13 @@ const Home = () => {
                     </div>
                 </div>
                 <ParticipantRanking participants={dummyParticipants} />
-                <div className="home__footer">
+                {/* <div className="home__footer">
                     <img src={logo} alt="icon1" className="home__footer-icon" />
                     <img src={logo} alt="icon2" className="home__footer-icon" />
                     <img src={logo} alt="icon3" className="home__footer-icon" />
                     <button className="home__footer-btn">休</button>
                     <img src={logo} alt="icon4" className="home__footer-icon" />
-                </div>
+                </div> */}
             </div>
         </div>
     );

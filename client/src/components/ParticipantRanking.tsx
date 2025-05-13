@@ -13,8 +13,6 @@ type ParticipantRankingProps = {
 };
 
 const crownColors = ['#FFD700', '#C0C0C0', '#CD7F32']; // 金・銀・銅
-const iconSizes = [50, 40, 35, 30]; // 1位,2位,3位,4位以降
-const crownSizes = [14, 12, 10, 8];
 
 const ParticipantRanking: React.FC<ParticipantRankingProps> = ({ participants }) => {
     // commit数で降順ソート
