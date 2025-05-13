@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ActivityStats.css';
+import { useClickOutside } from '../hooks/useClickOutside';
 
 interface ActivityStatsProps {
   startTime: Date;
@@ -28,16 +29,11 @@ const ActivityStats: React.FC<ActivityStatsProps> = ({ startTime, totalContribut
     return () => clearInterval(timer);
   }, [startTime]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (statsRef.current && !statsRef.current.contains(event.target as Node)) {
-        setIsExpanded(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useClickOutside(statsRef, () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+    }
+  });
 
   return (
     <div 
