@@ -54,7 +54,16 @@ const Home = () => {
             <div className="home__container">
                 <SidebarDrawer />
                 <TopTitle title="ハッカソンもくもくかい①" />
-                <div style={{flex:1, width:'100%', display:'flex', justifyContent:'center', alignItems:'center'}}>
+                <div style={{
+                    flex: 1,
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'flex-start',
+                    height: 'calc(100vh - 300px)',
+                    maxHeight: 'calc(100vh - 100px)',
+                    overflowY: 'auto'
+                }}>
                     <ActivityTimeline activities={dummyActivities} />
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './ActivityTimeline.css';
 
+const greens = ['#56D364', '#2DA042', '#196C2E', '#023A16'];
+
 export type Activity = {
   iconUrl: string;
   activityType: string;
@@ -13,10 +15,12 @@ type Props = {
 };
 
 const minSize = 40;
+const maxSize = 40;
 const cardPadding = '20px 40px';
 const itemHeight = 80;
-const verticalMargin = 16;
+const verticalMargin = 16; // 要素間の縦マージン
 
+// タイムラインアイテムのコンポーネント
 const ActivityTimelineItem: React.FC<{
   activity: Activity;
   size: number;
@@ -38,6 +42,7 @@ const ActivityTimelineItem: React.FC<{
     <div 
       className="timeline-card" 
       style={{ 
+        background: '#56D364', 
         fontSize: 16, 
         minWidth: cardMinWidth, 
         padding: cardPadding 
@@ -72,10 +77,19 @@ const ActivityTimeline: React.FC<Props> = ({ activities }) => {
     return () => window.removeEventListener('resize', updateContainerSize);
   }, []);
 
-  // 各アイテムの幅・カード幅・アイコンmargin
+  // 軌道線用: 各アイコンの中心座標を計算
   const getItemWidth = () => containerSize.width;
   const getCardMinWidth = () => containerSize.width * 0.6;
   const getIconMargin = () => containerSize.width * 0.05;
+  const iconPositions = reversed.map((_, i) => {
+    const size = minSize;
+    // margin分も加味してy座標を計算
+    const y = i * (itemHeight + verticalMargin * 2) + itemHeight / 2 + verticalMargin;
+    const x = getItemWidth()/2 - getCardMinWidth()/2 - getIconMargin() + size/2;
+    return { y, size, x };
+  });
+  // SVGの高さもmargin分を加味
+  const svgHeight = iconPositions.length > 0 ? iconPositions[iconPositions.length-1].y + minSize/2 + verticalMargin : 100;
 
   return (
     <div
