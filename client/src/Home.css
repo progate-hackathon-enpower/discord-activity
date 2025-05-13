@@ -204,10 +204,11 @@ html, body {
 .home__footer-crown {
     position: absolute;
     left: 50%;
-    top: -16px;
+    top: -12px;
     transform: translateX(-50%);
     z-index: 2;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    font-size: 20px;
 }
 .home__footer-username {
     color: #fff;

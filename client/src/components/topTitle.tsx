@@ -5,7 +5,7 @@ type TopTitleProps = {
     title: string;
 };
 
-const topTitle: React.FC<TopTitleProps> = ({ title }) => {
+const TopTitle: React.FC<TopTitleProps> = ({ title }) => {
     return (
         <div className="home__header">
             <span className="home__title">{title}</span>
@@ -13,4 +13,4 @@ const topTitle: React.FC<TopTitleProps> = ({ title }) => {
     );
 };
 
-export default topTitle; 
+export default TopTitle; 

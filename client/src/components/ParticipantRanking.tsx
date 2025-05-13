@@ -24,7 +24,7 @@ const ParticipantRanking: React.FC<ParticipantRankingProps> = ({ participants })
                     <div style={{position:'relative', display:'inline-block'}}>
                         <img src={p.iconUrl} alt={p.username} className="home__footer-icon" />
                         {i < 3 && (
-                            <FaCrown className="home__footer-crown" style={{color: crownColors[i], position:'absolute', top: -12, left: 8, fontSize: 20}} />
+                            <FaCrown className="home__footer-crown" style={{ color: crownColors[i] }} />
                         )}
                     </div>
                     <div className="home__footer-username">{p.username}</div>
