@@ -1,0 +1,94 @@
+.activity-stats {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(to bottom, rgba(32, 22, 83, 0.9), rgba(10, 26, 31, 0.95));
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(135, 79, 255, 0.2);
+  z-index: 1000;
+  border: 1px solid rgba(135, 79, 255, 0.3);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.activity-stats.compact {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.activity-stats.expanded {
+  padding: 20px;
+  min-width: 200px;
+}
+
+.stats-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.activity-stats.compact .stats-content {
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.activity-stats.compact h3 {
+  display: none;
+}
+
+.timer, .contributions {
+  margin-bottom: 0;
+}
+
+.timer h3, .contributions h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #b6ffd7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.time-display, .contribution-count {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+  font-family: monospace;
+  text-shadow: 0 0 10px rgba(86, 211, 100, 0.3);
+}
+
+.activity-stats.compact .time-display,
+.activity-stats.compact .contribution-count {
+  font-size: 20px;
+}
+
+.contributions {
+  border-top: 1px solid rgba(135, 79, 255, 0.3);
+  padding-top: 20px;
+}
+
+.activity-stats.compact .contributions {
+  border-top: none;
+  padding-top: 0;
+  border-left: 1px solid rgba(135, 79, 255, 0.3);
+  padding-left: 20px;
+}
+
+.contribution-count {
+  color: #56D364;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contribution-count::before {
+  content: '🌱';
+  font-size: 24px;
+}
+
+.activity-stats.compact .contribution-count::before {
+  font-size: 18px;
+} 
