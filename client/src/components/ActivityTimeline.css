@@ -1,0 +1,158 @@
+body {
+  background: radial-gradient(ellipse at 60% 20%, #223c2a 0%, #0a1a1f 80%, #050a13 100%);
+  /* 星粒エフェクト */
+  background-image:
+    radial-gradient(circle, #b6ffd7 1.5px, transparent 1.5px),
+    radial-gradient(circle, #7fffd4 1px, transparent 1px),
+    radial-gradient(circle, #fff 1px, transparent 1px),
+    radial-gradient(circle, #b6ffd7 1.5px, transparent 1.5px),
+    radial-gradient(circle, #7fffd4 1px, transparent 1px);
+  background-size: 1200px 800px, 800px 600px, 1000px 700px, 600px 400px, 400px 300px;
+  background-position: 0 0, 200px 100px, 400px 300px, 600px 200px, 800px 400px;
+}
+
+.timeline-container {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  padding-left: 0;
+  padding-top: 20px;
+  background: transparent !important;
+  margin-bottom: 20vh; /* ランキング背景の高さ分の余白を確保 */
+}
+.timeline-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #874FFF;
+  border-radius: 2px;
+  z-index: 1;
+}
+.timeline-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.timeline-rail-svg {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+.timeline-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 0;
+  justify-content: center;
+  width: auto;
+  margin: 6px 0;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform, box-shadow;
+  z-index: 1;
+}
+.timeline-icon {
+  margin-right: 6px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 60% 30%, #b6ffd7 0%, #2ecc40 60%, #0a1a1f 100%);
+  box-shadow: 0 0 24px 4px #b6ffd744, 0 2px 12px rgba(34,60,42,0.18);
+  overflow: hidden;
+  border: 2px solid #b6ffd7;
+}
+.timeline-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: auto;
+  box-shadow: 0 0 8px 2px #b6ffd744;
+}
+.timeline-card {
+  margin-left: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #ffffff !important;
+  background: rgba(10, 26, 31, 0.98) !important;
+  box-shadow: 0 4px 24px rgba(34,60,42,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  min-width: 200px;
+  max-width: 320px;
+  transition: box-shadow 0.3s, background 0.3s;
+  border: 1.5px solid #2ecc40;
+  backdrop-filter: blur(4px);
+  position: relative;
+}
+.timeline-time {
+  font-size: 13px;
+  color: #b6ffd7;
+  font-family: 'Menlo', 'Consolas', monospace;
+  position: absolute;
+  top: 8px;
+  left: 12px;
+}
+.timeline-type {
+  font-weight: bold;
+  font-size: 20px;
+  color: #7fffd4;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 6px #2ecc40cc;
+  width: 100%;
+  text-align: center;
+  margin-top: 16px;
+}
+.timeline-detail {
+  font-size: 11px;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  line-height: 1.4;
+  width: 100%;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* LIVEバッジ */
+.timeline-live-badge {
+  position: fixed;
+  top: 24px;
+  right: 36px;
+  background: linear-gradient(90deg, #2ecc40 0%, #7fffd4 100%);
+  color: #0a1a1f;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  box-shadow: 0 2px 12px #2ecc4044;
+  letter-spacing: 1.2px;
+  z-index: 100;
+  animation: live-badge-pulse 1.2s infinite alternate;
+}
+@keyframes live-badge-pulse {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.25); }
+} 
