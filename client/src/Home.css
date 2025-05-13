@@ -1,7 +1,319 @@
+#root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
 html, body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
     background-color: #201653;
+    margin: 0;
+    padding: 0;
+}
+
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.home h1 {
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.home p {
+    color: #56D364;
+    font-size: 18px;
+    margin-bottom: 24px;
+}
+
+.home__button {
+    background-color: #874FFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.home__button:hover {
+    background-color: #56D364;
+    color: #201653;
+}
+
+.home__container {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    padding: 0;
+}
+
+.home__header,
+.home__contribution,
+.home__chat,
+.home__footer {
+    width: 100%;
+    padding-left: 32px;
+    padding-right: 32px;
+    box-sizing: border-box;
+    margin: 0;
+    max-width: none;
+}
+
+.home__header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: none;
+}
+
+.home__title {
+    background: #874FFF;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 14px;
+    border-radius: 0 0 12px 12px;
+    margin: 0 auto;
+    margin-top: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: inline-block;
+    letter-spacing: 1px;
+}
+
+.home__timer {
+    display: none;
+}
+
+.home__contribution {
+    color: #56D364;
+    font-size: 18px;
+    margin: 8px 0 0 0;
+    text-align: right;
+    padding-right: 40px;
+}
+.home__contribution span {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.home__chat {
+    flex: 1;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    justify-content: center;
+    margin: 0;
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+.home__chat-item {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    position: relative;
+}
+.home__chat-item--left {
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.home__chat-item--right {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+.home__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #874FFF;
+    background: #fff;
+}
+.home__bubble {
+    max-width: 40vw;
+    min-width: 80px;
+    padding: 12px 18px;
+    border-radius: 18px;
+    font-size: 16px;
+    color: #fff;
+    word-break: break-word;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.home__bubble--blue {
+    background: #874FFF;
+}
+.home__bubble--green {
+    background: #56D364;
+    color: #201653;
+    font-weight: bold;
+}
+.home__time {
+    color: #fff;
+    font-size: 12px;
+    margin: 0 8px;
+    opacity: 0.7;
+}
+
+.home__footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 24px;
+    padding: 18px 0 24px 0;
+    background: none;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 20;
+}
+.home__footer-icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 56px;
+}
+.home__footer-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #fff;
+    border: 2px solid #874FFF;
+    object-fit: cover;
+    position: relative;
+}
+.home__footer-crown {
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    transform: translateX(-50%);
+    z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    font-size: 20px;
+}
+.home__footer-username {
+    color: #fff;
+    font-size: 12px;
+    margin-top: 2px;
+    text-align: center;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.home__footer-commit {
+    color: #56D364;
+    font-size: 11px;
+    margin-top: 0px;
+    text-align: center;
+}
+
+.home__footer-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #444;
+    color: #fff;
+    border: 2px solid #874FFF;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.home__footer-btn:hover {
+    background: #874FFF;
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .home__header,
+    .home__contribution,
+    .home__chat,
+    .home__footer {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    .home__bubble {
+        max-width: 70vw;
+    }
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 32px;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    transition: width 0.3s cubic-bezier(.4,2,.6,1), background 0.3s;
+    z-index: 1000;
+    box-shadow: none;
+}
+.sidebar__toggle {
+    background: #874FFF;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    width: 32px;
+    height: 48px;
+    cursor: pointer;
+    outline: none;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+    position: relative;
+    left: 0;
+    z-index: 1001;
+}
+.sidebar__toggle:hover {
+    background: #a07fff;
+}
+.sidebar--open {
+    width: 100px;
+    background: #874FFF;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+}
+.sidebar--open .sidebar__toggle {
+    background: transparent;
+    color: #fff;
+    box-shadow: none;
+}
+.sidebar__icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+    width: 100%;
+}
+.sidebar__icon {
+    color: #fff;
+    font-size: 32px;
+    transition: color 0.2s;
 }
   
