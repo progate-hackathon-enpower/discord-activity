@@ -16,5 +16,5 @@ export const useClickOutside = (
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [ref, handler]);
+    }, [handler]);
 }; 
