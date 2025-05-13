@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './Home.css';
 import logo from './assets/logo.png';
 import SidebarDrawer from './components/SidebarDrawer';
-import TopTitle from './components/TopTitle';
+import TopTitle from './components/topTitle';
 import ParticipantRanking from './components/ParticipantRanking';
 import ActivityTimeline from './components/ActivityTimeline';
 import ActivityStats from './components/ActivityStats';
