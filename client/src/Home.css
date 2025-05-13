@@ -1,11 +1,52 @@
-
 html, body {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    background-color: #201653;
+    background: linear-gradient(to bottom, #000000, #201653);
     margin: 0;
     padding: 0;
+    position: relative;
+}
+
+/* ランキング背景用のスタイル */
+.ranking-background {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20vh;
+    background: #201653;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* 星のパーティクル用のスタイル */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 4s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
 }
 
 .home {
