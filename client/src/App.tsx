@@ -165,9 +165,11 @@ function MainApp() {
       <div className="overlay"></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
         <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/>
-        <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
+        {/* <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p> */}
+        <br/>
+        <br/>
         <SimpleButton text='タップで始める' onClick={()=>{navigate("/home")}}/>
-        {currentUserUpdate != null ?<p>{newUserUpdate?.username}が{newUserIsJoin?"参加":"退出"}しました</p>: <p>ユーザーの参加イベントはありません</p>}
+        {/* {currentUserUpdate != null ?<p>{newUserUpdate?.username}が{newUserIsJoin?"参加":"退出"}しました</p>: <p>ユーザーの参加イベントはありません</p>} */}
         {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
       </div>

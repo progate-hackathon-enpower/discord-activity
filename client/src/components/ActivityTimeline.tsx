@@ -127,6 +127,7 @@ const ActivityTimeline: React.FC<Props> = ({ activities }) => {
     if (container) {
       container.addEventListener('scroll', handleScroll);
       // 初期位置でも中央の要素を計算
+      container.scrollTop = container.scrollHeight;
       handleScroll();
     }
 
