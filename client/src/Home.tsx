@@ -1,11 +1,13 @@
 import './Home.css';
 import logo from './assets/logo.png';
 import SidebarDrawer from './components/SidebarDrawer';
+import TopTitle from './components/TopTitle';
 
 const Home = () => {
     return (
         <div className="home__container">
             <SidebarDrawer />
+            <TopTitle title="ハッカソンもくもくかい①" />
             <div style={{flex:1, width:'100%'}}>
                 <div className="home__header">
                     <span className="home__title">ハッカソンもくもくかい①</span>

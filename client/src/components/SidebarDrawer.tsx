@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaMusic, FaHourglass, FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import '../Home.css';
 
-const SidebarDrawer: React.FC = () => {
+const sideBarDrawer: React.FC = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     return (
         <div className={`sidebar${drawerOpen ? ' sidebar--open' : ''}`}> 
@@ -19,4 +19,4 @@ const SidebarDrawer: React.FC = () => {
     );
 };
 
-export default SidebarDrawer; 
+export default sideBarDrawer; 
