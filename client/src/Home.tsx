@@ -2,6 +2,15 @@ import './Home.css';
 import logo from './assets/logo.png';
 import SidebarDrawer from './components/SidebarDrawer';
 import TopTitle from './components/TopTitle';
+import ParticipantRanking from './components/ParticipantRanking';
+
+const dummyParticipants = [
+    { username: 'Alice', iconUrl: logo, commit: 12 },
+    { username: 'Bob', iconUrl: logo, commit: 8 },
+    { username: 'Carol', iconUrl: logo, commit: 5 },
+    { username: 'Dave', iconUrl: logo, commit: 3 },
+    { username: 'Eve', iconUrl: logo, commit: 2 },
+];
 
 const Home = () => {
     return (
@@ -37,6 +46,7 @@ const Home = () => {
                         <span className="home__time">17:43</span>
                     </div>
                 </div>
+                <ParticipantRanking participants={dummyParticipants} />
                 <div className="home__footer">
                     <img src={logo} alt="icon1" className="home__footer-icon" />
                     <img src={logo} alt="icon2" className="home__footer-icon" />
