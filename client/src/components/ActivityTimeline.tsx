@@ -15,7 +15,6 @@ type Props = {
 };
 
 const minSize = 40;
-const maxSize = 40;
 const cardPadding = '20px 40px';
 const itemHeight = 80;
 const verticalMargin = 16; // 要素間の縦マージン
