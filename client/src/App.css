@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+button{
+  outline: none;
+}
+
 .logo {
   filter: drop-shadow(0 0 2em #023A16);
   will-change: filter;
@@ -42,6 +46,7 @@ html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  user-select: none;
 }
 
 

@@ -95,7 +95,9 @@ async function authenticate():Promise<authType|number> {
 function MainApp() {
   const navigate = useNavigate();
   const [authContext, setAuthContext] = useState<authType | number>(0);
-  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
+  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
+  const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
+  const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
@@ -121,8 +123,11 @@ function MainApp() {
       case 3:
         return (
           <>
-          <img src={qrcodeImage} style={{width:"80vh",maxWidth:"80%"}}></img>
+            <img src={qrcodeImage} style={{width:"80vh",maxWidth:"80%"}} draggable="false"></img>
             <h1>アプリから登録を完了してください。</h1>
+            <SimpleButton text='登録しました' onClick={()=>{
+              window.location.reload();
+            }}/>
           </>
         );
     }
@@ -134,21 +139,35 @@ function MainApp() {
   // ユーザーの参加イベントを監視
   function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
     console.log(JSON.stringify(participants.participants));
-    participants.participants.forEach((p)=>{
-      console.log(p.username);
-      setCurrentUserUpdate(p);
-    });
+    const oldUsers = new Set(currentUserUpdate?.map(user=>user.id));
+    const newUsers = new Set(participants.participants.map(user => user.id));
+
+    if(currentUserUpdate != null){
+      const addedUser = currentUserUpdate.filter(item => !newUsers.has(item.id));
+      const removedUser = participants.participants.filter(item => !oldUsers.has(item.id));
+      console.log("追加されたユーザー、消えたユーザー",addedUser,removedUser);
+      if (addedUser.length != removedUser.length){ // どちらのリストにも変化がない場合は何もしない
+        setNewUserUpdate(addedUser.length !== 0 ? addedUser[0] : removedUser[0])
+        setNewUserType(addedUser.length == 0)
+      }
+
+    }else{
+      setNewUserUpdate(participants.participants[0]);
+      setNewUserType(true);
+    }
+    setCurrentUserUpdate(participants.participants);
   }
 
   discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center",placeItems:"center",alignContent: "center",alignItems:"center" }}>
       <div className="overlay"></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
-        <img className="logo" src={mainLogo} style={{width:"60%"}}/>
+        <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/>
         <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p>
         <SimpleButton text='タップで始める' onClick={()=>{navigate("/home")}}/>
-        {currentUserUpdate != null ?<p>{currentUserUpdate.username}が参加しました</p>: <p>ユーザーの参加イベントはありません</p>}
+        {currentUserUpdate != null ?<p>{newUserUpdate?.username}が{newUserIsJoin?"参加":"退出"}しました</p>: <p>ユーザーの参加イベントはありません</p>}
         {/*ここより上にコンポーネントを追加*/}
         <FrontendButton/>
       </div>
