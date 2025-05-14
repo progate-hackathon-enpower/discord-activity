@@ -1,35 +1,22 @@
-import { useEffect, useRef } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 import './Home.css';
-import logo from './assets/logo.png';
 import SidebarDrawer from './components/SidebarDrawer';
 import TopTitle from './components/TopTitle';
 import ParticipantRanking from './components/ParticipantRanking';
+
 import ActivityTimeline from './components/ActivityTimeline';
 import ActivityStats from './components/ActivityStats';
 import type { Activity } from './components/ActivityTimeline';
+import type { Types } from '@discord/embedded-app-sdk';
+import { Events } from '@discord/embedded-app-sdk';
+import { getDiscordSdk } from './lib/discordSdk';
+import { getSupabaseClient } from './lib/supabase';
 
-const dummyParticipants = [
-    { username: 'Alice', iconUrl: logo, commit: 12 },
-    { username: 'Bob', iconUrl: logo, commit: 8 },
-    { username: 'Carol', iconUrl: logo, commit: 5 },
-    { username: 'Dave', iconUrl: logo, commit: 3 },
-    { username: 'Eve', iconUrl: logo, commit: 2 },
-];
-
-const dummyActivities: Activity[] = [
-  { iconUrl: logo, activityType: 'pushed 2 commits!', time: '17:43', detail: 'Add: emoi modal...' },
-  { iconUrl: logo, activityType: 'Issue tateta...', time: '17:21', detail: 'Issue tateta...' },
-  { iconUrl: logo, activityType: 'Issue tateta...', time: '17:21', detail: 'Issue tateta...' },
-  { iconUrl: logo, activityType: 'created issue', time: '17:10', detail: 'Fix: bug in timeline' },
-  { iconUrl: logo, activityType: 'pushed 1 commit', time: '17:00', detail: 'Refactor: UI' },
-  { iconUrl: logo, activityType: 'opened PR', time: '16:50', detail: 'Add: new feature' },
-  { iconUrl: logo, activityType: 'commented', time: '16:40', detail: 'Looks good!' },
-  { iconUrl: logo, activityType: 'closed issue', time: '16:30', detail: 'Resolved: typo' },
-  { iconUrl: logo, activityType: 'reviewed PR', time: '16:20', detail: 'Approve changes' },
-  { iconUrl: logo, activityType: 'merged PR', time: '16:10', detail: 'Feature complete' },
-  { iconUrl: logo, activityType: 'reopened issue', time: '16:00', detail: 'Bug reappeared' },
-  { iconUrl: logo, activityType: 'assigned issue', time: '15:50', detail: 'Assign to Alice' },
-];
+interface TranslateId{
+    discord_id: string;
+    supabase_id: string;
+}
 
 const StarsBackground = () => {
     const starsRef = useRef<HTMLDivElement>(null);
@@ -68,15 +55,85 @@ const StarsBackground = () => {
 const Home = () => {
     // もくもく会の開始時間を設定（例：現在時刻から1時間前）
     const startTime = new Date(Date.now() - 60 * 60 * 1000);
+    const discordSdk = getDiscordSdk();
     
     // 総Contribution数を計算
-    const totalContributions = dummyParticipants.reduce((sum, participant) => sum + participant.commit, 0);
+    const [currentUser, setCurrentUser] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
+    const [activity, setActivity] = useState<Activity[]>([]);
+    const [activityUser, setActivityUser] = useState<ActivityUser[]>([]);
+    const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
+    const [totalContributions, setTotalContributions] = useState<number>(0);
+
+    useEffect(() => {
+        const subscription = discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
+    function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
+        setCurrentUser(participants.participants);
+    }
+
+    useEffect(() => {
+        if (currentUser) {
+            const supabase = getSupabaseClient();
+            const filterString = `user_id=in.(${currentUser?.map(user => user.id)})`;
+            
+    
+            const channel = supabase
+                .channel("table-db-changes")
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "INSERT",
+                        schema: "public",
+                        table: "stats",
+                        filter: filterString,
+                    },
+                    (payload) => {
+                        const user = currentUser!.find(user => user.id === payload.new.user_id);
+    
+                        const newActivity: Activity = {
+                            user_id: payload.new.user_id,
+                            iconUrl: `https://cdn.discordapp.com/avatars/${user!.id}/${user!.avatar}.png?size=256`,
+                            activityType: "Push 1 Commits",
+                            time: payload.new.created_at,
+                            detail: payload.new.detail
+                        };
+    
+                        setActivity(prevActivity => [...prevActivity, newActivity]);
+                    }
+                )
+                .subscribe();
+            return () => {
+                channel.unsubscribe();
+            }
+        }
+    }, [currentUser]);
+
+    useEffect(() => {
+        if (currentUser) {
+            const activityUser: ActivityUser[] = currentUser!.map(user => {
+                const ActivityList = activity.filter(activity => activity.user_id === user.id);
+                return {
+                    id: user.id,
+                    username: user.username,
+                    iconUrl: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`,
+                    activityCount: ActivityList.length,
+                }
+            });
+    
+            setActivityUser(activityUser)
+            setTotalContributions(activity.length)
+        }
+    },[activity,currentUser])
 
     return (
         <div style={{position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden'}}>
             <StarsBackground />
             <div className="ranking-background" />
-            <ParticipantRanking participants={dummyParticipants} />
+            <ParticipantRanking participants={activityUser} />
             <ActivityStats startTime={startTime} totalContributions={totalContributions} />
             <div className="home__container">
                 <SidebarDrawer />
@@ -91,7 +148,7 @@ const Home = () => {
                     maxHeight: 'calc(100vh - 100px)',
                     overflowY: 'auto'
                 }}>
-                    <ActivityTimeline activities={dummyActivities} />
+                    <ActivityTimeline activities={activity} />
                 </div>
             </div>
         </div>
