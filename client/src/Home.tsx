@@ -62,7 +62,12 @@ const Home = () => {
     const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
     const [totalContributions, setTotalContributions] = useState<number>(0);
 
-    discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+    useEffect(() => {
+        const subscription = discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
 
     function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
         setCurrentUser(participants.participants);
