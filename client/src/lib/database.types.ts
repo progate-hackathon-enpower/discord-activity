@@ -38,19 +38,19 @@ export type Database = {
       stats: {
         Row: {
           created_at: string
-          datail: string | null
+          detail: string | null
           id: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          datail?: string | null
+          detail?: string | null
           id?: string
           user_id: string
         }
         Update: {
           created_at?: string
-          datail?: string | null
+          detail?: string | null
           id?: string
           user_id?: string
         }
