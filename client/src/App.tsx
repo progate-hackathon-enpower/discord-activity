@@ -10,15 +10,17 @@ import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './Home.tsx';
 import { createClient } from '@supabase/supabase-js'
+import { getDiscordSdk } from './lib/discordSdk.ts';
+import { getSupabaseClient } from './lib/supabase.ts';
 // SDK のインスタンスを生成
-const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
+const discordSdk = getDiscordSdk();
 
 type authType = Awaited<ReturnType<typeof discordSdk.commands.authenticate>>;
 setupDiscordSdk().then(() => {
   console.log("Discord SDK is ready");
 });
 
-const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+const supabase = getSupabaseClient()
 
 // SDK を介してアプリにアクセス
 async function setupDiscordSdk() {
@@ -105,9 +107,21 @@ function MainApp() {
     };
     fetchAuth();
   },[authContext]);
+
   if(authContext == null) return (
     <h1>ローディング中...</h1>
   );
+
+  useEffect(() => {
+    // Discord SDKのイベント購読を設定
+    discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
+    // クリーンアップ関数
+    return () => {
+        // コンポーネントのアンマウント時にイベント購読を解除
+        discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+    };
+  }, []);
 
   if(typeof authContext == 'number'){
     /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
@@ -138,7 +152,6 @@ function MainApp() {
 
   // ユーザーの参加イベントを監視
   function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
-    console.log(JSON.stringify(participants.participants));
     const oldUsers = new Set(currentUserUpdate?.map(user=>user.id));
     const newUsers = new Set(participants.participants.map(user => user.id));
 
@@ -157,8 +170,6 @@ function MainApp() {
     }
     setCurrentUserUpdate(participants.participants);
   }
-
-  discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
 
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center",placeItems:"center",alignContent: "center",alignItems:"center" }}>

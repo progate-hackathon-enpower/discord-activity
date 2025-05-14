@@ -4,6 +4,7 @@ import './ActivityTimeline.css';
 const greens = ['#56D364', '#2DA042', '#196C2E', '#023A16'];
 
 export type Activity = {
+  user_id: string;
   iconUrl: string;
   activityType: string;
   time: string;
