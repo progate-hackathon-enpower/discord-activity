@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import './Home.css';
 import logo from './assets/logo.png';
 import SidebarDrawer from './components/SidebarDrawer';
