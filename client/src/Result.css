@@ -1,0 +1,7 @@
+.result__ranking-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 360px;
+} 

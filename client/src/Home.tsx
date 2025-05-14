@@ -1,8 +1,10 @@
+
 import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import SidebarDrawer from './components/SidebarDrawer';
-import TopTitle from './components/topTitle';
-import ParticipantRanking, { type ActivityUser } from './components/ParticipantRanking';
+import TopTitle from './components/TopTitle';
+import ParticipantRanking from './components/ParticipantRanking';
+
 import ActivityTimeline from './components/ActivityTimeline';
 import ActivityStats from './components/ActivityStats';
 import type { Activity } from './components/ActivityTimeline';

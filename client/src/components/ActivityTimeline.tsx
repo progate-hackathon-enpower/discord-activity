@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import './ActivityTimeline.css';
 
-const greens = ['#56D364', '#2DA042', '#196C2E', '#023A16'];
+// (Line removed)
 
 export type Activity = {
   user_id: string;
