@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import SidebarDrawer from './components/SidebarDrawer';
 import TopTitle from './components/TopTitle';
-import ParticipantRanking from './components/ParticipantRanking';
+import ParticipantRanking, { type ActivityUser }from './components/ParticipantRanking';
 
 import ActivityTimeline from './components/ActivityTimeline';
 import ActivityStats from './components/ActivityStats';
@@ -66,9 +66,6 @@ const Home = () => {
 
     useEffect(() => {
         const subscription = discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
-        return () => {
-            subscription.unsubscribe();
-        };
     }, []);
 
     function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
