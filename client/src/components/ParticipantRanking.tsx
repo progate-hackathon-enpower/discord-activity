@@ -1,6 +1,5 @@
 import React from 'react';
 import { FaCrown } from 'react-icons/fa';
-import logo from '../assets/logo.png';
 
 export interface ActivityUser {
     id: string;
