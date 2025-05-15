@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import SidebarDrawer from './components/SidebarDrawer';
@@ -118,11 +117,30 @@ const Home = () => {
                     username: user.username,
                     iconUrl: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`,
                     activityCount: ActivityList.length,
+                    isActive: true,
                 }
             });
+
+            // activityに存在するが、currentUserに存在しないユーザーを追加
+            const currentUserIds = new Set(currentUser.map(user => user.id));
+            const inactiveUsers = activity
+                .filter(act => !currentUserIds.has(act.user_id))
+                .reduce((acc, act) => {
+                    if (!acc.some(user => user.id === act.user_id)) {
+                        const userActivities = activity.filter((a: Activity) => a.user_id === act.user_id);
+                        acc.push({
+                            id: act.user_id,
+                            username: act.user_id, // ユーザー名は取得できないため、IDを表示
+                            iconUrl: `https://cdn.discordapp.com/avatars/${act.user_id}/default.png?size=256`,
+                            activityCount: userActivities.length,
+                            isActive: false,
+                        });
+                    }
+                    return acc;
+                }, [] as ActivityUser[]);
     
-            setActivityUser(activityUser)
-            setTotalContributions(activity.length)
+            setActivityUser([...activityUser, ...inactiveUsers]);
+            setTotalContributions(activity.length);
         }
     },[activity,currentUser])
 
