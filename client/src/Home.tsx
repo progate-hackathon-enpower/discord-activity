@@ -60,7 +60,7 @@ const Home = () => {
     const [currentUser, setCurrentUser] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
     const [activity, setActivity] = useState<Activity[]>([]);
     const [activityUser, setActivityUser] = useState<ActivityUser[]>([]);
-    const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
+    // const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
     const [totalContributions, setTotalContributions] = useState<number>(0);
 
     useEffect(() => {
@@ -130,8 +130,8 @@ const Home = () => {
                         const userActivities = activity.filter((a: Activity) => a.user_id === act.user_id);
                         acc.push({
                             id: act.user_id,
-                            username: act.user_id, // ユーザー名は取得できないため、IDを表示
-                            iconUrl: `https://cdn.discordapp.com/avatars/${act.user_id}/default.png?size=256`,
+                            username: "離席中", // ユーザー名は取得できないため、離席中と表示
+                            iconUrl: act.iconUrl,
                             activityCount: userActivities.length,
                             isActive: false,
                         });
