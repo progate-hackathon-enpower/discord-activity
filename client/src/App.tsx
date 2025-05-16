@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import mainLogo from './assets/logo.png';
 import './App.css';
 import { DiscordSDK,Events, type Types } from "@discord/embedded-app-sdk";
-import backgroundImg from './assets/home_background.png';
+import backgroundImg from './assets/mokuhub_main.png';
 import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
@@ -172,10 +172,10 @@ function MainApp() {
   }
 
   return (
-    <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "center",placeItems:"center",alignContent: "center",alignItems:"center" }}>
+    <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "start",placeItems:"center",alignContent: "center",alignItems:"center" }}>
       <div className="overlay"></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
-        <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/>
+        {/* <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/> */}
         {/* <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p> */}
         <br/>
         <br/>
