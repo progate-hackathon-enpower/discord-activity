@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ['dependence-mud-bunch-brief.trycloudflare.com'],
+    allowedHosts: ['nr-acceptable-month-innovations.trycloudflare.com'],
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
