@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 // import reactLogo from './assets/react.svg';
 import mainLogo from './assets/logo.png';
 import './App.css';
@@ -96,6 +96,7 @@ async function authenticate():Promise<authType|number> {
 
 function MainApp() {
   const navigate = useNavigate();
+  const overlayRef = useRef<HTMLDivElement>(null);
   const [authContext, setAuthContext] = useState<authType | number>(0);
   
   useEffect(()=>{
@@ -136,10 +137,38 @@ function MainApp() {
       <h1>ローディング中...</h1>
     );
   }
+const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
 
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple-effect';
+
+    const rect = overlay.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    overlay.appendChild(ripple);
+
+    ripple.addEventListener('animationend', () => {
+      ripple.remove();
+    });
+  };
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "start",placeItems:"center",alignContent: "center",alignItems:"center" }}>
-      <div className="overlay"  onClick={()=>{navigate("/home")}}></div>
+      <div 
+        className="overlay"  
+        ref={overlayRef}
+        onClick={(e) => {
+          createRipple(e);
+          navigate("/home");
+        }}
+      ></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
         {/* <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/> */}
         {/* <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p> */}
