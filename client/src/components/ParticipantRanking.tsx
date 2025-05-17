@@ -6,6 +6,7 @@ export interface ActivityUser {
     username: string;
     iconUrl: string;
     activityCount: number;
+    isActive: boolean;
 }
 
 type ParticipantRankingProps = {
@@ -52,7 +53,12 @@ const ParticipantRanking: React.FC<ParticipantRankingProps> = ({ participants })
                                 src={p.iconUrl} 
                                 alt={p.username} 
                                 className="home__footer-icon"
-                                style={{width: iconSize, height: iconSize}} 
+                                style={{
+                                    width: iconSize, 
+                                    height: iconSize,
+                                    opacity: p.isActive ? 1 : 0.3,
+                                    transition: 'opacity 0.3s ease'
+                                }} 
                             />
                             {showCrown && (
                                 <FaCrown 
