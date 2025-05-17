@@ -1,8 +1,7 @@
-
 import { useEffect, useRef, useState } from 'react';
 import './Home.css';
 import SidebarDrawer from './components/SidebarDrawer';
-import TopTitle from './components/TopTitle';
+import TopTitle from './components/Title';
 import ParticipantRanking, { type ActivityUser }from './components/ParticipantRanking';
 
 import ActivityTimeline from './components/ActivityTimeline';
@@ -61,11 +60,12 @@ const Home = () => {
     const [currentUser, setCurrentUser] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
     const [activity, setActivity] = useState<Activity[]>([]);
     const [activityUser, setActivityUser] = useState<ActivityUser[]>([]);
-    const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
+    // const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
     const [totalContributions, setTotalContributions] = useState<number>(0);
 
     useEffect(() => {
-        const subscription = discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+        discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
     }, []);
 
     function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
@@ -118,11 +118,30 @@ const Home = () => {
                     username: user.username,
                     iconUrl: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`,
                     activityCount: ActivityList.length,
+                    isActive: true,
                 }
             });
+
+            // activityに存在するが、currentUserに存在しないユーザーを追加
+            const currentUserIds = new Set(currentUser.map(user => user.id));
+            const inactiveUsers = activity
+                .filter(act => !currentUserIds.has(act.user_id))
+                .reduce((acc, act) => {
+                    if (!acc.some(user => user.id === act.user_id)) {
+                        const userActivities = activity.filter((a: Activity) => a.user_id === act.user_id);
+                        acc.push({
+                            id: act.user_id,
+                            username: "離席中", // ユーザー名は取得できないため、離席中と表示
+                            iconUrl: act.iconUrl,
+                            activityCount: userActivities.length,
+                            isActive: false,
+                        });
+                    }
+                    return acc;
+                }, [] as ActivityUser[]);
     
-            setActivityUser(activityUser)
-            setTotalContributions(activity.length)
+            setActivityUser([...activityUser, ...inactiveUsers]);
+            setTotalContributions(activity.length);
         }
     },[activity,currentUser])
 

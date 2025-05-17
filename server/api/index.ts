@@ -5,6 +5,8 @@ import fetch from "node-fetch";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { createClient } from '@supabase/supabase-js';
+import { handle } from 'hono/vercel'
+
 
 dotenv.config({ path: "../.env" });
 
@@ -119,3 +121,11 @@ serve({
 },(info)=>{
   console.log(`Server is running on http://localhost:${info.port}`);
 });
+
+const handler = handle(app);
+
+export const GET = handler;
+export const POST = handler;
+export const PATCH = handler;
+export const PUT = handler;
+export const OPTIONS = handler;
