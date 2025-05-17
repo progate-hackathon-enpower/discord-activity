@@ -2,8 +2,9 @@
   "name": "server",
   "type": "module",
   "scripts": {
-    "start": "vercel dev",
-    "deploy": "vercel"
+    "dev": "tsx watch api/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
@@ -11,8 +12,7 @@
     "dotenv": "^16.5.0",
     "hono": "^4.7.9",
     "jsonwebtoken": "^9.0.2",
-    "node-fetch": "^3.3.2",
-    "vercel": "^41.7.8"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",

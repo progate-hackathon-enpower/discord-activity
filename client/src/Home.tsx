@@ -64,7 +64,8 @@ const Home = () => {
     const [totalContributions, setTotalContributions] = useState<number>(0);
 
     useEffect(() => {
-        const subscription = discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+        discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
     }, []);
 
     function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
