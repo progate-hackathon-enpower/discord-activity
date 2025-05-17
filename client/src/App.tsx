@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import Home from './Home.tsx';
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
+import type { Types } from '@discord/embedded-app-sdk';
 // SDK のインスタンスを生成
 const discordSdk = getDiscordSdk();
 
@@ -94,15 +95,12 @@ function MainApp() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
   const [authContext, setAuthContext] = useState<authType | number>(0);
-<<<<<<< HEAD
-  
-=======
   const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
   const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
   const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
   const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const cursorRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -134,7 +132,6 @@ function MainApp() {
     return () => clearInterval(interval);
   }, [cursorPos]);
 
->>>>>>> c9e01a5 (add: カーソルの色を変更)
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
