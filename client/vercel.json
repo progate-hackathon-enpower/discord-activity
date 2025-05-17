@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api",
-        "destination": "https://server-jlynse85s-yomi4486s-projects.vercel.app/"
+        "destination": "https://server-jlynse85s-yomi4486s-projects.vercel.app"
       }
     ]
   }
