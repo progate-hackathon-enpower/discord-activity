@@ -26,3 +26,4 @@ Discord Activitiesの構築について詳しくは、[https://discord.com/devel
 - npm/yarn
 - Discord Developer Portal
 
+ 
