@@ -9,23 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      activity_users: {
+      activity: {
         Row: {
-          channel_id: string | null
-          id: string
-          user_id: string | null
+          active: boolean
+          created_at: string
+          instance_id: string
+          title: string | null
         }
         Insert: {
-          channel_id?: string | null
-          id?: string
-          user_id?: string | null
+          active?: boolean
+          created_at?: string
+          instance_id: string
+          title?: string | null
         }
         Update: {
-          channel_id?: string | null
-          id?: string
-          user_id?: string | null
+          active?: boolean
+          created_at?: string
+          instance_id?: string
+          title?: string | null
+        }
+        Relationships: []
+      }
+      activity_users: {
+        Row: {
+          instance_id: string
+          user_id: string
+        }
+        Insert: {
+          instance_id: string
+          user_id: string
+        }
+        Update: {
+          instance_id?: string
+          user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "activity_users_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "activity"
+            referencedColumns: ["instance_id"]
+          },
           {
             foreignKeyName: "activity_users_user_id_fkey"
             columns: ["user_id"]
@@ -40,18 +65,21 @@ export type Database = {
           created_at: string
           detail: string | null
           id: string
+          type: Database["public"]["Enums"]["stats-type"]
           user_id: string
         }
         Insert: {
           created_at?: string
           detail?: string | null
           id?: string
+          type?: Database["public"]["Enums"]["stats-type"]
           user_id: string
         }
         Update: {
           created_at?: string
           detail?: string | null
           id?: string
+          type?: Database["public"]["Enums"]["stats-type"]
           user_id?: string
         }
         Relationships: [
@@ -69,6 +97,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           github_id: string | null
+          github_username: string | null
           icon_url: string
           id: string
         }
@@ -76,6 +105,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           github_id?: string | null
+          github_username?: string | null
           icon_url: string
           id: string
         }
@@ -83,6 +113,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           github_id?: string | null
+          github_username?: string | null
           icon_url?: string
           id?: string
         }
@@ -96,7 +127,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      "stats-type":
+        | "commit"
+        | "issue"
+        | "comment"
+        | "pull_request"
+        | "review"
+        | "review_comment"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -211,6 +248,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      "stats-type": [
+        "commit",
+        "issue",
+        "comment",
+        "pull_request",
+        "review",
+        "review_comment",
+      ],
+    },
   },
 } as const

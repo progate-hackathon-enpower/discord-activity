@@ -11,6 +11,7 @@ import type { Types } from '@discord/embedded-app-sdk';
 import { Events } from '@discord/embedded-app-sdk';
 import { getDiscordSdk } from './lib/discordSdk';
 import { getSupabaseClient } from './lib/supabase';
+import type { Database } from './lib/database.types';
 
 interface TranslateId{
     discord_id: string;
@@ -50,6 +51,25 @@ const StarsBackground = () => {
 
     return <div ref={starsRef} className="stars" />;
 };
+
+const translateActivityMessage = (type: Database["public"]["Tables"]["stats"]["Row"]["type"]) => {
+    switch(type){
+        case "commit":
+            return "Push 1 Commits";
+        case "issue":
+            return "Issue 1 Created";
+        case "comment":
+            return "Comment 1 Created";
+        case "pull_request":
+            return "Pull Request 1 Created";
+        case "review":
+            return "Review 1 Created";
+        case "review_comment":
+            return "Review Comment 1 Created";
+        default:
+            return "Push 1 Commits";
+    }
+}
 
 const Home = () => {
     // もくもく会の開始時間を設定（例：現在時刻から1時間前）
@@ -120,15 +140,15 @@ const Home = () => {
                         table: "stats",
                         filter: filterString,
                     },
-                    (payload) => {
+                    (payload: {new:Database["public"]["Tables"]["stats"]["Row"]}) => {
                         const user = currentUser!.find(user => user.id === payload.new.user_id);
     
                         const newActivity: Activity = {
                             user_id: payload.new.user_id,
                             iconUrl: `https://cdn.discordapp.com/avatars/${user!.id}/${user!.avatar}.png?size=256`,
-                            activityType: "Push 1 Commits",
+                            activityType: translateActivityMessage(payload.new.type),
                             time: payload.new.created_at,
-                            detail: payload.new.detail
+                            detail: payload.new.detail || "",
                         };
     
                         setActivity(prevActivity => [...prevActivity, newActivity]);
