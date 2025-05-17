@@ -28,7 +28,7 @@ async function setupDiscordSdk() {
 }
 /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
 async function authenticate():Promise<authType|number> {
-  console.log("Starting authentication process...");
+
   const { code } = await discordSdk.commands.authorize({
     client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
     response_type: "code",
@@ -97,9 +97,7 @@ async function authenticate():Promise<authType|number> {
 function MainApp() {
   const navigate = useNavigate();
   const [authContext, setAuthContext] = useState<authType | number>(0);
-  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
-  const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
-  const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
+  
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
@@ -111,17 +109,6 @@ function MainApp() {
   if(authContext == null) return (
     <h1>ローディング中...</h1>
   );
-
-  useEffect(() => {
-    // Discord SDKのイベント購読を設定
-    discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
-
-    // クリーンアップ関数
-    return () => {
-        // コンポーネントのアンマウント時にイベント購読を解除
-        discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
-    };
-  }, []);
 
   if(typeof authContext == 'number'){
     /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
@@ -148,27 +135,6 @@ function MainApp() {
     return (
       <h1>ローディング中...</h1>
     );
-  }
-
-  // ユーザーの参加イベントを監視
-  function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
-    const oldUsers = new Set(currentUserUpdate?.map(user=>user.id));
-    const newUsers = new Set(participants.participants.map(user => user.id));
-
-    if(currentUserUpdate != null){
-      const addedUser = currentUserUpdate.filter(item => !newUsers.has(item.id));
-      const removedUser = participants.participants.filter(item => !oldUsers.has(item.id));
-      console.log("追加されたユーザー、消えたユーザー",addedUser,removedUser);
-      if (addedUser.length != removedUser.length){ // どちらのリストにも変化がない場合は何もしない
-        setNewUserUpdate(addedUser.length !== 0 ? addedUser[0] : removedUser[0])
-        setNewUserType(addedUser.length == 0)
-      }
-
-    }else{
-      setNewUserUpdate(participants.participants[0]);
-      setNewUserType(true);
-    }
-    setCurrentUserUpdate(participants.participants);
   }
 
   return (
