@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -58,4 +60,66 @@ html, body {
   height: 100%;
   /* background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒レイヤー */
   z-index: 900;
+  overflow: hidden;
+}
+
+.ripple-effect {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(182, 255, 215, 0.25);
+  transform: scale(0);
+  animation: ripple-animate 0.5s linear forwards;
+}
+
+@keyframes ripple-animate {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.start-text {
+  color: #b6ffd7;
+  font-size: 28px;
+  font-family: 'Orbitron', 'Montserrat', sans-serif;
+  animation: float 2s ease-in-out infinite;
+  cursor: pointer;
+  margin-top: 200px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+.start-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(182, 255, 215, 0.2) 0%,
+    rgba(46, 204, 64, 0.1) 50%,
+    rgba(10, 26, 31, 0) 100%
+  );
+  border-radius: 3px;
+  z-index: -1;
+  animation: glow 3s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
 }
