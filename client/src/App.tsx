@@ -1,17 +1,14 @@
-import {useEffect, useState} from 'react';
-// import reactLogo from './assets/react.svg';
-import mainLogo from './assets/logo.png';
+import {useEffect, useState, useRef} from 'react';
 import './App.css';
-import { DiscordSDK,Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/mokuhub_main.png';
 import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './Home.tsx';
-import { createClient } from '@supabase/supabase-js'
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
+import type { Types } from '@discord/embedded-app-sdk';
 // SDK のインスタンスを生成
 const discordSdk = getDiscordSdk();
 
@@ -96,8 +93,45 @@ async function authenticate():Promise<authType|number> {
 
 function MainApp() {
   const navigate = useNavigate();
+  const overlayRef = useRef<HTMLDivElement>(null);
   const [authContext, setAuthContext] = useState<authType | number>(0);
-  
+  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
+  const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
+  const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
+  const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // パーティクルエフェクト（止まっていても出す）
+  useEffect(() => {
+    const spawnParticle = () => {
+      const particle = document.createElement('div');
+      particle.className = 'cursor-particle';
+      particle.style.left = `${cursorPos.x + (Math.random() - 0.5) * 20}px`;
+      particle.style.top = `${cursorPos.y + (Math.random() - 0.5) * 20}px`;
+      document.body.appendChild(particle);
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 500);
+    };
+    const interval = setInterval(() => {
+      if (document.hasFocus()) {
+        if (Math.random() < 0.5) spawnParticle();
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [cursorPos]);
+
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
@@ -136,10 +170,50 @@ function MainApp() {
       <h1>ローディング中...</h1>
     );
   }
+const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
+    const overlay = overlayRef.current;
+    if (!overlay) return;
 
+    const ripple = document.createElement('div');
+    ripple.className = 'ripple-effect';
+
+    const rect = overlay.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    overlay.appendChild(ripple);
+
+    ripple.addEventListener('animationend', () => {
+      ripple.remove();
+    });
+  };
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "start",placeItems:"center",alignContent: "center",alignItems:"center" }}>
-      <div className="overlay"  onClick={()=>{navigate("/home")}}></div>
+      <div 
+        className="overlay"  
+        ref={overlayRef}
+        onClick={(e) => {
+          createRipple(e);
+          navigate("/home");
+        }}
+      ></div>
+      <div 
+        ref={cursorRef}
+        className="cursor-glow"
+        style={{
+          left: `${cursorPos.x}px`,
+          top: `${cursorPos.y}px`,
+          position: 'fixed',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          display: 'block'
+        }}
+      ></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
         {/* <img className="logo" src={mainLogo} style={{width:"60%"}} draggable="false"/> */}
         {/* <p style={{fontSize:20}}>ようこそ、{authContext.user.global_name != null ? authContext.user.global_name:authContext.user.username}</p> */}
