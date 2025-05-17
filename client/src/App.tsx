@@ -1,5 +1,6 @@
 import {useEffect, useState, useRef} from 'react';
 import './App.css';
+import { Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/mokuhub_main.png';
 import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
@@ -8,7 +9,6 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import Home from './Home.tsx';
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
-import type { Types } from '@discord/embedded-app-sdk';
 // SDK のインスタンスを生成
 const discordSdk = getDiscordSdk();
 
@@ -25,7 +25,7 @@ async function setupDiscordSdk() {
 }
 /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
 async function authenticate():Promise<authType|number> {
-
+  console.log("Starting authentication process...");
   const { code } = await discordSdk.commands.authorize({
     client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
     response_type: "code",
@@ -95,12 +95,8 @@ function MainApp() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
   const [authContext, setAuthContext] = useState<authType | number>(0);
-  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
-  const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
-  const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
   const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const cursorRef = useRef<HTMLDivElement>(null);
-  const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -170,7 +166,8 @@ function MainApp() {
       <h1>ローディング中...</h1>
     );
   }
-const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
+
+  const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
     const overlay = overlayRef.current;
     if (!overlay) return;
 
@@ -192,6 +189,7 @@ const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
       ripple.remove();
     });
   };
+
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "start",placeItems:"center",alignContent: "center",alignItems:"center" }}>
       <div 
