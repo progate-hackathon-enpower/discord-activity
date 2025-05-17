@@ -1,5 +1,6 @@
 import {useEffect, useState, useRef} from 'react';
 import './App.css';
+import { Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/mokuhub_main.png';
 import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
@@ -8,7 +9,6 @@ import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-route
 import Home from './Home.tsx';
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
-import type { Types } from '@discord/embedded-app-sdk';
 // SDK のインスタンスを生成
 const discordSdk = getDiscordSdk();
 
@@ -25,7 +25,7 @@ async function setupDiscordSdk() {
 }
 /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
 async function authenticate():Promise<authType|number> {
-
+  console.log("Starting authentication process...");
   const { code } = await discordSdk.commands.authorize({
     client_id: import.meta.env.VITE_DISCORD_CLIENT_ID,
     response_type: "code",
@@ -144,6 +144,17 @@ function MainApp() {
     <h1>ローディング中...</h1>
   );
 
+  useEffect(() => {
+    // Discord SDKのイベント購読を設定
+    discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+
+    // クリーンアップ関数
+    return () => {
+        // コンポーネントのアンマウント時にイベント購読を解除
+        discordSdk.unsubscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
+    };
+  }, []);
+
   if(typeof authContext == 'number'){
     /// 1: リクエストに失敗 2: 認証が未完了 3:アプリ側で未登録
     switch(authContext){
@@ -170,7 +181,29 @@ function MainApp() {
       <h1>ローディング中...</h1>
     );
   }
-const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
+
+  // ユーザーの参加イベントを監視
+  function updateParticipants(participants: Types.GetActivityInstanceConnectedParticipantsResponse) {
+    const oldUsers = new Set(currentUserUpdate?.map(user=>user.id));
+    const newUsers = new Set(participants.participants.map(user => user.id));
+
+    if(currentUserUpdate != null){
+      const addedUser = currentUserUpdate.filter(item => !newUsers.has(item.id));
+      const removedUser = participants.participants.filter(item => !oldUsers.has(item.id));
+      console.log("追加されたユーザー、消えたユーザー",addedUser,removedUser);
+      if (addedUser.length != removedUser.length){ // どちらのリストにも変化がない場合は何もしない
+        setNewUserUpdate(addedUser.length !== 0 ? addedUser[0] : removedUser[0])
+        setNewUserType(addedUser.length == 0)
+      }
+
+    }else{
+      setNewUserUpdate(participants.participants[0]);
+      setNewUserType(true);
+    }
+    setCurrentUserUpdate(participants.participants);
+  }
+
+  const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
     const overlay = overlayRef.current;
     if (!overlay) return;
 
@@ -192,6 +225,7 @@ const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
       ripple.remove();
     });
   };
+
   return (
     <body style={{display: "grid",backgroundImage: `url(${backgroundImg})`,backgroundSize: "cover", backgroundPosition: "start",placeItems:"center",alignContent: "center",alignItems:"center" }}>
       <div 
