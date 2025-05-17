@@ -3,10 +3,6 @@
     {
       "source": "/api/(.*)",
        "destination": "/api"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "https://discord-activity-pink.vercel.app/"
     }
   ],
   "buildCommand": ""
