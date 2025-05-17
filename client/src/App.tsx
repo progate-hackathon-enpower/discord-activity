@@ -1,15 +1,11 @@
 import {useEffect, useState, useRef} from 'react';
-// import reactLogo from './assets/react.svg';
-import mainLogo from './assets/logo.png';
 import './App.css';
-import { DiscordSDK,Events, type Types } from "@discord/embedded-app-sdk";
 import backgroundImg from './assets/mokuhub_main.png';
 import qrcodeImage from './assets/qrcode.png';
 import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './Home.tsx';
-import { createClient } from '@supabase/supabase-js'
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
 // SDK のインスタンスを生成
