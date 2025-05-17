@@ -43,14 +43,76 @@ button{
   color: #888;
 }
 
-
 html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   user-select: none;
+  cursor: none;
 }
 
+.cursor-glow {
+  pointer-events: none;
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(182, 255, 215, 0.8) 0%,
+    rgba(46, 204, 64, 0.4) 50%,
+    rgba(10, 26, 31, 0) 100%
+  );
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  mix-blend-mode: screen;
+  animation: cursor-pulse 2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.cursor-trail {
+  pointer-events: none;
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(182, 255, 215, 0.6);
+  transform: translate(-50%, -50%);
+  z-index: 9998;
+  mix-blend-mode: screen;
+  animation: trail-fade 1s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+.cursor-particle {
+  pointer-events: none;
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(182, 255, 215, 0.4);
+  transform: translate(-50%, -50%);
+  z-index: 9997;
+  mix-blend-mode: screen;
+  animation: particle-fade 0.5s ease-out forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes cursor-pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+}
+
+@keyframes trail-fade {
+  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+}
+
+@keyframes particle-fade {
+  0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+}
 
 .overlay {
   position: absolute;

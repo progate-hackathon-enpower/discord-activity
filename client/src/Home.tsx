@@ -62,6 +62,38 @@ const Home = () => {
     const [activityUser, setActivityUser] = useState<ActivityUser[]>([]);
     // const [translateIdList, setTranslateIdList] = useState<TranslateId[]>([]);
     const [totalContributions, setTotalContributions] = useState<number>(0);
+    const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    const cursorRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            setCursorPos({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    // パーティクルエフェクト（止まっていても出す）
+    useEffect(() => {
+        const spawnParticle = () => {
+            const particle = document.createElement('div');
+            particle.className = 'cursor-particle';
+            particle.style.left = `${cursorPos.x + (Math.random() - 0.5) * 20}px`;
+            particle.style.top = `${cursorPos.y + (Math.random() - 0.5) * 20}px`;
+            document.body.appendChild(particle);
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 500);
+        };
+        const interval = setInterval(() => {
+            if (document.hasFocus()) {
+                if (Math.random() < 0.5) spawnParticle();
+            }
+        }, 50);
+        return () => clearInterval(interval);
+    }, [cursorPos]);
 
     useEffect(() => {
         discordSdk.subscribe(Events.ACTIVITY_INSTANCE_PARTICIPANTS_UPDATE, updateParticipants);
@@ -167,6 +199,18 @@ const Home = () => {
                     <ActivityTimeline activities={activity} />
                 </div>
             </div>
+            <div 
+                ref={cursorRef}
+                className="cursor-glow"
+                style={{
+                    left: `${cursorPos.x}px`,
+                    top: `${cursorPos.y}px`,
+                    position: 'fixed',
+                    pointerEvents: 'none',
+                    zIndex: 9999,
+                    display: 'block'
+                }}
+            />
         </div>
     );
 }

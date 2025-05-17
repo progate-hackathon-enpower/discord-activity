@@ -94,7 +94,47 @@ function MainApp() {
   const navigate = useNavigate();
   const overlayRef = useRef<HTMLDivElement>(null);
   const [authContext, setAuthContext] = useState<authType | number>(0);
+<<<<<<< HEAD
   
+=======
+  const [currentUserUpdate , setCurrentUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"]|null>(null);
+  const [newUserUpdate , setNewUserUpdate] = useState<Types.GetActivityInstanceConnectedParticipantsResponse["participants"][0]|null>(null);
+  const [newUserIsJoin , setNewUserType] = useState<boolean>(true);
+  const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number>();
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // パーティクルエフェクト（止まっていても出す）
+  useEffect(() => {
+    const spawnParticle = () => {
+      const particle = document.createElement('div');
+      particle.className = 'cursor-particle';
+      particle.style.left = `${cursorPos.x + (Math.random() - 0.5) * 20}px`;
+      particle.style.top = `${cursorPos.y + (Math.random() - 0.5) * 20}px`;
+      document.body.appendChild(particle);
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 500);
+    };
+    const interval = setInterval(() => {
+      if (document.hasFocus()) {
+        if (Math.random() < 0.5) spawnParticle();
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [cursorPos]);
+
+>>>>>>> c9e01a5 (add: カーソルの色を変更)
   useEffect(()=>{
     const fetchAuth = async () => {
       const auth = await authenticate();
@@ -163,6 +203,18 @@ const createRipple = (event: React.MouseEvent<HTMLDivElement>) => {
         onClick={(e) => {
           createRipple(e);
           navigate("/home");
+        }}
+      ></div>
+      <div 
+        ref={cursorRef}
+        className="cursor-glow"
+        style={{
+          left: `${cursorPos.x}px`,
+          top: `${cursorPos.y}px`,
+          position: 'fixed',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          display: 'block'
         }}
       ></div>
       <div style={{zIndex:999,position:"relative",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20}}>
