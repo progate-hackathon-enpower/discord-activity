@@ -1,7 +1,7 @@
 {
     "rewrites": [
       {
-        "source": "/api",
+        "source": "/api-test",
         "destination": "https://server-jlynse85s-yomi4486s-projects.vercel.app"
       }
     ]
