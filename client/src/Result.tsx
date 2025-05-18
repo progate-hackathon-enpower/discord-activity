@@ -1,5 +1,5 @@
-import { useState } from "react";
-
+import { useState, useEffect, useRef } from "react";
+import "./Result.css";
 import StarsBackground from "./components/StarsBackground";
 import ActivityStats from "./components/ActivityStats";
 import ResultRanking from "./components/ResultRanking";
@@ -20,8 +20,40 @@ const thumbnail = 'https://example.com/thumbnail.png';
 const Result = () => {
   const [selectedTab, setSelectedTab] = useState('Alice');
   const [shareImage, setShareImage] = useState(thumbnail);
+  const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const cursorRef = useRef<HTMLDivElement>(null);
   const startTime = new Date(Date.now() - 2 * 60 * 60 * 1000 - 13 * 60 * 1000 - 4 * 1000); // 2:13:04前
   const totalContributions = dummyParticipants.reduce((sum, p) => sum + p.commit, 0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // パーティクルエフェクト
+  useEffect(() => {
+    const spawnParticle = () => {
+      const particle = document.createElement('div');
+      particle.className = 'cursor-particle';
+      particle.style.left = `${cursorPos.x + (Math.random() - 0.5) * 20}px`;
+      particle.style.top = `${cursorPos.y + (Math.random() - 0.5) * 20}px`;
+      document.body.appendChild(particle);
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.parentNode.removeChild(particle);
+        }
+      }, 500);
+    };
+    const interval = setInterval(() => {
+      if (document.hasFocus()) {
+        if (Math.random() < 0.5) spawnParticle();
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [cursorPos]);
 
   // シェア画像生成のダミー処理
   const handleShare = () => {
@@ -38,11 +70,23 @@ const Result = () => {
   return (
     <div style={{position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden'}}>
       <StarsBackground />
+      <div 
+        ref={cursorRef}
+        className="cursor-glow"
+        style={{
+          left: `${cursorPos.x}px`,
+          top: `${cursorPos.y}px`,
+          position: 'fixed',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          display: 'block'
+        }}
+      />
       <div style={{position: 'relative', zIndex: 1, padding: '32px 0'}}>
         <div style={{textAlign: 'center', color: '#fff', marginBottom: 16, fontSize: 24, fontWeight: 'bold', letterSpacing: 2}}>
           ハッカソンもくもくかい①<br />お疲れ様でしたー！🌱
         </div>
-        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 32, marginBottom: 24}}>
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 32, marginBottom: 24, width: '100%', maxWidth: '1200px', margin: '0 auto 24px'}}>
           <ActivityStats startTime={startTime} totalContributions={totalContributions} />
           <div style={{fontSize: 32, color: '#56D364', fontWeight: 'bold'}}>🌱 {totalContributions} Contributions</div>
           <span style={{background: '#56D364', color: '#201653', borderRadius: 8, padding: '4px 12px', fontWeight: 'bold'}}>Excellent!!</span>
@@ -84,14 +128,14 @@ const Result = () => {
           {/* タブ内容 */}
           <div style={{flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
             {selectedTab === '👑 Ranking' ? (
-              <div className="result__ranking-center" style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+              <div className="result__ranking-center">
                 <div>
                   <div style={{color: '#fff', fontWeight: 'bold', marginBottom: 8}}>ランキング</div>
                   <ResultRanking participants={dummyParticipants} />
                 </div>
               </div>
             ) : (
-              <div style={{minWidth: 320, maxWidth: 600, margin: '0 auto'}}>
+              <div className="result__timeline-center">
                 <div style={{color: '#fff', fontWeight: 'bold', marginBottom: 8}}>{selectedTab} のタイムライン</div>
                 <ActivityTimeline activities={dummyActivities} />
               </div>
