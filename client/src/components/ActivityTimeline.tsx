@@ -75,8 +75,7 @@ const ActivityTimelineItem: React.FC<{
 };
 
 const ActivityTimeline: React.FC<Props> = ({ activities }) => {
-  const reversed = [...activities].reverse();
-  const n = reversed.length;
+  const n = activities.length;
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
   const [centerIndex, setCenterIndex] = useState<number>(0);
@@ -96,54 +95,62 @@ const ActivityTimeline: React.FC<Props> = ({ activities }) => {
     updateContainerSize();
     return () => window.removeEventListener('resize', updateContainerSize);
   }, []);
-
+  
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
-
+  
       const container = containerRef.current;
       const containerRect = container.getBoundingClientRect();
       const containerCenter = containerRect.top + containerRect.height / 2;
-
-      // 各アイテムの位置を計算
+  
       const items = container.getElementsByClassName('timeline-item');
       let closestIndex = 0;
       let minDistance = Infinity;
-
+  
       Array.from(items).forEach((item, index) => {
         const rect = item.getBoundingClientRect();
         const itemCenter = rect.top + rect.height / 2;
         const distance = Math.abs(itemCenter - containerCenter);
-
+  
         if (distance < minDistance) {
           minDistance = distance;
           closestIndex = index;
         }
       });
-
+  
       setCenterIndex(closestIndex);
     };
-
+  
     const container = containerRef.current;
     if (container) {
       container.addEventListener('scroll', handleScroll);
-      // 初期位置でも中央の要素を計算
       container.scrollTop = container.scrollHeight;
       handleScroll();
     }
-
+  
     return () => {
       if (container) {
         container.removeEventListener('scroll', handleScroll);
       }
     };
   }, []);
+  
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [activities]); // `activities` の変更時にスクロールを実施
+  
 
   // 軌道線用: 各アイコンの中心座標を計算
   const getItemWidth = () => containerSize.width;
   const getCardMinWidth = () => containerSize.width * 0.6;
   const getIconMargin = () => containerSize.width * 0.05;
-  const iconPositions = reversed.map((_, i) => {
+  const iconPositions = activities.map((_, i) => {
     const size = minSize;
     // margin分も加味してy座標を計算
     const y = i * (itemHeight + verticalMargin * 2) + itemHeight / 2 + verticalMargin;
@@ -177,7 +184,7 @@ const ActivityTimeline: React.FC<Props> = ({ activities }) => {
           paddingBottom: '20vh'
         }}
       >
-        {reversed.map((a, i) => (
+        {activities.map((a, i) => (
           <ActivityTimelineItem
             key={i}
             activity={a}
