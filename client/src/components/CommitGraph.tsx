@@ -68,3 +68,4 @@ const CommitGraph: React.FC<Props> = ({ commitData }) => {
 };
 
 export default CommitGraph;
+ 

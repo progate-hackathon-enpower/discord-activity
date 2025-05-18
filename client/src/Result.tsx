@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import "./Result.css";
 import StarsBackground from "./components/StarsBackground";
 import ActivityStats from "./components/ActivityStats";
@@ -6,30 +7,21 @@ import ResultRanking from "./components/ResultRanking";
 import ActivityTimeline from "./components/ActivityTimeline";
 import CommitGraph from "./components/CommitGraph";
 
-const dummyParticipants = [
-  { username: 'Alice', iconUrl: 'https://example.com/alice.png', commit: 100 },
-  { username: 'Bob', iconUrl: 'https://example.com/bob.png', commit: 80 },
-  { username: 'Charlie', iconUrl: 'https://example.com/charlie.png', commit: 60 },
-];
-const dummyActivities = [
-  { user_id: '1', username: 'Alice', iconUrl: 'https://example.com/alice.png', activityType: 'pushed 2 commits', time: '17:43', detail: 'Add: new feature' },
-  { user_id: '2', username: 'Bob', iconUrl: 'https://example.com/bob.png', activityType: 'created issue', time: '17:21', detail: 'Fix: bug in timeline' },
-  { user_id: '3', username: 'Charlie', iconUrl: 'https://example.com/charlie.png', activityType: 'opened PR', time: '17:00', detail: 'Refactor: UI' },
-];
-const thumbnail = 'https://example.com/thumbnail.png';
-const dummyCommitData = [
-  { time: '2022-01-01', commits: 5 },
-  { time: '2022-01-02', commits: 10 },
-  { time: '2022-01-03', commits: 15 },
-];
+interface Participant {
+  username: string;
+  iconUrl: string;
+  commit: number;
+}
 
 const Result = () => {
-  const [selectedTab, setSelectedTab] = useState('Alice');
+  const location = useLocation();
+  const participants = location.state?.participants || [];
+  const [selectedTab, setSelectedTab] = useState(participants[0]?.username || '');
   const [selectedView, setSelectedView] = useState<'timeline' | 'graph'>('timeline');
   const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const cursorRef = useRef<HTMLDivElement>(null);
   const startTime = new Date(Date.now() - 2 * 60 * 60 * 1000 - 13 * 60 * 1000 - 4 * 1000); // 2:13:04前
-  const totalContributions = dummyParticipants.reduce((sum, p) => sum + p.commit, 0);
+  const totalContributions = participants.reduce((sum: number, p: Participant) => sum + p.commit, 0);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -63,7 +55,7 @@ const Result = () => {
 
   // タブリスト（アイコン化）
   const tabList = [
-    ...dummyParticipants.map(p => ({ key: p.username, icon: p.iconUrl })),
+    ...participants.map((p: Participant) => ({ key: p.username, icon: p.iconUrl })),
     { key: '👑 Ranking', icon: null }
   ];
 
@@ -131,7 +123,7 @@ const Result = () => {
               <div className="result__ranking-center">
                 <div>
                   <div style={{color: '#fff', fontWeight: 'bold', marginBottom: 8}}>ランキング</div>
-                  <ResultRanking participants={dummyParticipants} />
+                  <ResultRanking participants={participants} />
                 </div>
               </div>
             ) : (
@@ -170,9 +162,9 @@ const Result = () => {
                   </div>
                 </div>
                 {selectedView === 'timeline' ? (
-                  <ActivityTimeline activities={dummyActivities} />
+                  <ActivityTimeline activities={[]} />
                 ) : (
-                  <CommitGraph commitData={dummyCommitData} />
+                  <CommitGraph commitData={[]} />
                 )}
               </div>
             )}
