@@ -121,7 +121,7 @@ html, body {
   width: 100%;
   height: 100%;
   /* background-color: rgba(0, 0, 0, 0.5); 半透明の黒レイヤー */
-  z-index: 900;
+  z-index: 1000;
   overflow: hidden;
   cursor: pointer;
 }
@@ -155,6 +155,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: relative;
+  z-index: 1;
 }
 
 .start-text::before {
@@ -171,7 +172,7 @@ html, body {
     rgba(10, 26, 31, 0) 100%
   );
   border-radius: 3px;
-  z-index: -1;
+  z-index: 99;
   animation: glow 3s ease-in-out infinite;
 }
 
