@@ -13,6 +13,26 @@ interface Participant {
   commit: number;
 }
 
+const dummyActivities = [
+  {
+    user_id: '1',
+    iconUrl: 'https://example.com/alice.png',
+    activityType: 'pushed 2 commits',
+    time: '17:43',
+    detail: 'Add: new feature'
+  }
+]
+
+const dummyCommitData = [
+  { time: '2024-03-20', commits: 5 },
+  { time: '2024-03-21', commits: 8 },
+  { time: '2024-03-22', commits: 12 },
+  { time: '2024-03-23', commits: 15 },
+  { time: '2024-03-24', commits: 10 },
+  { time: '2024-03-25', commits: 7 },
+  { time: '2024-03-26', commits: 9 }
+];
+
 const Result = () => {
   const location = useLocation();
   const participants = location.state?.participants || [];
@@ -164,7 +184,7 @@ const Result = () => {
                 {selectedView === 'timeline' ? (
                   <ActivityTimeline activities={[]} />
                 ) : (
-                  <CommitGraph commitData={[]} />
+                  <CommitGraph commitData={dummyCommitData} />
                 )}
               </div>
             )}
