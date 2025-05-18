@@ -11,7 +11,7 @@ Read more about building Discord Activities with the Embedded App SDK at [https:
 Discord Activitiesの構築について詳しくは、[https://discord.com/developers/docs/activities/overview](https://discord.com/developers/docs/activities/overview)をご覧ください。
 
 ## 使用技術
-<img src="https://go-skill-icons.vercel.app/api/icons?i=ts,hono,react,dart,flutter,discord,github,supabase,vercel" />
+<img src="https://go-skill-icons.vercel.app/api/icons?i=ts,hono,react,dart,flutter,discord,github,supabase,vercel" alt="Icons representing technologies: TypeScript, Hono, React, Dart, Flutter, Discord, GitHub, Supabase, and Vercel" />
 
 ## 機能一覧
 - Discord Activitiesのテンプレート
