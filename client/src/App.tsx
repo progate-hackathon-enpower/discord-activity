@@ -7,6 +7,7 @@ import FrontendButton from './components/froatButton.tsx';
 import SimpleButton from './components/simpleButton.tsx';
 import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import Home from './Home.tsx';
+import ResultPage from './Result.tsx';
 import { getDiscordSdk } from './lib/discordSdk.ts';
 import { getSupabaseClient } from './lib/supabase.ts';
 // SDK のインスタンスを生成
@@ -256,8 +257,12 @@ const MainRoutes = () => {
         element={<MainApp />}
       />
       <Route
-        path="/Home"
+        path="/home"
         element={<Home/>}
+      />
+      <Route
+        path="/result"
+        element={<ResultPage/>}
       />
     </Routes>
   );

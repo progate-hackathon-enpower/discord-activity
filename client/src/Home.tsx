@@ -3,6 +3,7 @@ import './Home.css';
 import SidebarDrawer from './components/SidebarDrawer';
 import TopTitle from './components/Title';
 import ParticipantRanking, { type ActivityUser }from './components/ParticipantRanking';
+import { useNavigate } from 'react-router-dom';
 
 import ActivityTimeline from './components/ActivityTimeline';
 import ActivityStats from './components/ActivityStats';
@@ -72,6 +73,7 @@ const translateActivityMessage = (type: Database["public"]["Tables"]["stats"]["R
 }
 
 const Home = () => {
+    const navigate = useNavigate();
     // もくもく会の開始時間を設定（例：現在時刻から1時間前）
     const startTime = new Date(Date.now() - 60 * 60 * 1000);
     const discordSdk = getDiscordSdk();
@@ -197,6 +199,15 @@ const Home = () => {
         }
     },[activity,currentUser])
 
+    const handleResultClick = () => {
+        const resultParticipants = activityUser.map(user => ({
+            username: user.username,
+            iconUrl: user.iconUrl,
+            commit: user.activityCount
+        }));
+        navigate('/result', { state: { participants: resultParticipants } });
+    };
+
     return (
         <div style={{position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden'}}>
             <StarsBackground />
@@ -218,6 +229,32 @@ const Home = () => {
                 }}>
                     <ActivityTimeline activities={activity} />
                 </div>
+                <button
+                    onClick={handleResultClick}
+                    style={{
+                        position: 'fixed',
+                        right: '20px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        padding: '12px 24px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        borderRadius: '8px',
+                        color: 'white',
+                        cursor: 'pointer',
+                        backdropFilter: 'blur(10px)',
+                        transition: 'all 0.3s ease',
+                        zIndex: 1000
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                    }}
+                >
+                    結果を見る
+                </button>
             </div>
             <div 
                 ref={cursorRef}
