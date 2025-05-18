@@ -164,7 +164,8 @@ const ActivityTimeline: React.FC<Props> = ({ activities }) => {
         overflowY: 'auto',
         margin: '0 auto',
         display: 'flex',
-        flexDirection: 'column' // 最新のアイテムを上に配置
+        flexDirection: 'column',
+        paddingBottom: '100px' // 下部にマージンを追加
       }}
     >
       <div 

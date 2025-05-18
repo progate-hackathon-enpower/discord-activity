@@ -4,6 +4,7 @@ import StarsBackground from "./components/StarsBackground";
 import ActivityStats from "./components/ActivityStats";
 import ResultRanking from "./components/ResultRanking";
 import ActivityTimeline from "./components/ActivityTimeline";
+import CommitGraph from "./components/CommitGraph";
 
 const dummyParticipants = [
   { username: 'Alice', iconUrl: 'https://example.com/alice.png', commit: 100 },
@@ -16,9 +17,15 @@ const dummyActivities = [
   { user_id: '3', username: 'Charlie', iconUrl: 'https://example.com/charlie.png', activityType: 'opened PR', time: '17:00', detail: 'Refactor: UI' },
 ];
 const thumbnail = 'https://example.com/thumbnail.png';
+const dummyCommitData = [
+  { time: '2022-01-01', commits: 5 },
+  { time: '2022-01-02', commits: 10 },
+  { time: '2022-01-03', commits: 15 },
+];
 
 const Result = () => {
   const [selectedTab, setSelectedTab] = useState('Alice');
+  const [selectedView, setSelectedView] = useState<'timeline' | 'graph'>('timeline');
   const [shareImage, setShareImage] = useState(thumbnail);
   const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -136,8 +143,44 @@ const Result = () => {
               </div>
             ) : (
               <div className="result__timeline-center">
-                <div style={{color: '#fff', fontWeight: 'bold', marginBottom: 8}}>{selectedTab} のタイムライン</div>
-                <ActivityTimeline activities={dummyActivities} />
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 16}}>
+                  <div style={{color: '#fff', fontWeight: 'bold'}}>{selectedTab} の{selectedView === 'timeline' ? 'タイムライン' : 'コミット履歴'}</div>
+                  <div style={{display: 'flex', gap: 8}}>
+                    <button
+                      onClick={() => setSelectedView('graph')}
+                      style={{
+                        background: selectedView === 'graph' ? '#874FFF' : 'rgba(255,255,255,0.1)',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '8px 16px',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      📊
+                    </button>
+                    <button
+                      onClick={() => setSelectedView('timeline')}
+                      style={{
+                        background: selectedView === 'timeline' ? '#874FFF' : 'rgba(255,255,255,0.1)',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '8px 16px',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      🌱
+                    </button>
+                  </div>
+                </div>
+                {selectedView === 'timeline' ? (
+                  <ActivityTimeline activities={dummyActivities} />
+                ) : (
+                  <CommitGraph commitData={dummyCommitData} />
+                )}
               </div>
             )}
           </div>
