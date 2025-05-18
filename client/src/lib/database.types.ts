@@ -60,6 +60,24 @@ export type Database = {
           },
         ]
       }
+      sessions: {
+        Row: {
+          created_at: string
+          instance_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          instance_id: string
+          title?: string
+        }
+        Update: {
+          created_at?: string
+          instance_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       stats: {
         Row: {
           created_at: string
@@ -100,6 +118,7 @@ export type Database = {
           github_username: string | null
           icon_url: string
           id: string
+          moku_point: number
         }
         Insert: {
           created_at?: string
@@ -108,6 +127,7 @@ export type Database = {
           github_username?: string | null
           icon_url: string
           id: string
+          moku_point?: number
         }
         Update: {
           created_at?: string
@@ -116,6 +136,7 @@ export type Database = {
           github_username?: string | null
           icon_url?: string
           id?: string
+          moku_point?: number
         }
         Relationships: []
       }

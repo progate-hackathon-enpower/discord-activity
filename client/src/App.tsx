@@ -195,8 +195,21 @@ function MainApp() {
       <div 
         className="overlay"  
         ref={overlayRef}
-        onClick={(e) => {
+        onClick={async (e) => {
           createRipple(e);
+          try {
+            await supabase
+              .from('sessions')
+              .insert([
+                {
+                  instance_id: discordSdk.instanceId,
+                  title: 'New Activity Session',
+                }
+              ])
+              .select();
+          } catch (error) {
+            console.error('Error creating activity:', error);
+          }
           navigate("/home");
         }}
       ></div>
