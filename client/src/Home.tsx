@@ -140,7 +140,7 @@ const Home = () => {
                         table: "stats",
                         filter: filterString,
                     },
-                    (payload: {new:Database["public"]["Tables"]["stats"]["Row"]}) => {
+                    async (payload: {new:Database["public"]["Tables"]["stats"]["Row"]}) => {
                         const user = currentUser!.find(user => user.id === payload.new.user_id);
     
                         const newActivity: Activity = {
@@ -150,8 +150,24 @@ const Home = () => {
                             time: payload.new.created_at,
                             detail: payload.new.detail || "",
                         };
-    
-                        setActivity(prevActivity => [...prevActivity, newActivity]);
+                        if(payload.new.user_id){
+                            // Get current moku_point
+                            const { data: userData } = await supabase
+                                .from("users")
+                                .select("moku_point")
+                                .eq("id", payload.new.user_id)
+                                .single();
+                            
+                            // Update moku_point
+                            await supabase
+                                .from("users")
+                                .update({
+                                    moku_point: (userData?.moku_point || 0) + 10
+                                })
+                                .eq("id", payload.new.user_id);
+
+                            setActivity(prevActivity => [...prevActivity, newActivity]);
+                        }
                     }
                 )
                 .subscribe();
