@@ -24,7 +24,6 @@ const ResultRanking: React.FC<ResultRankingProps> = ({ participants }) => {
       alignItems: 'flex-end',
       justifyContent: 'center',
       minWidth: 'min-content',
-      marginLeft: TABBAR_WIDTH + 16, // タブバー分の余白
       transition: 'margin 0.2s',
     }}>
       {sorted.map((p, i) => (

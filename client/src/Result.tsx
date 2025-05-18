@@ -26,7 +26,6 @@ const dummyCommitData = [
 const Result = () => {
   const [selectedTab, setSelectedTab] = useState('Alice');
   const [selectedView, setSelectedView] = useState<'timeline' | 'graph'>('timeline');
-  const [shareImage, setShareImage] = useState(thumbnail);
   const [cursorPos, setCursorPos] = useState({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const cursorRef = useRef<HTMLDivElement>(null);
   const startTime = new Date(Date.now() - 2 * 60 * 60 * 1000 - 13 * 60 * 1000 - 4 * 1000); // 2:13:04前
@@ -61,12 +60,6 @@ const Result = () => {
     }, 50);
     return () => clearInterval(interval);
   }, [cursorPos]);
-
-  // シェア画像生成のダミー処理
-  const handleShare = () => {
-    alert('シェア画像を生成しました！（ダミー）');
-    setShareImage(thumbnail);
-  };
 
   // タブリスト（アイコン化）
   const tabList = [
@@ -183,14 +176,6 @@ const Result = () => {
                 )}
               </div>
             )}
-          </div>
-        </div>
-        <div style={{textAlign: 'center', marginTop: 32}}>
-          <button onClick={handleShare} style={{background: '#874FFF', color: '#fff', border: 'none', borderRadius: 12, padding: '16px 48px', fontSize: 20, fontWeight: 'bold', cursor: 'pointer', marginBottom: 16}}>
-            ♻️ 結果をシェア
-          </button>
-          <div style={{marginTop: 8}}>
-            <img src={shareImage} alt="シェア画像" style={{width: 240, borderRadius: 16, border: '4px solid #56D364', background: '#fff'}} />
           </div>
         </div>
       </div>
